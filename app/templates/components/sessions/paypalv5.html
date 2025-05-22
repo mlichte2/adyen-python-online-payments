@@ -1,0 +1,47 @@
+{% extends "layout.html" %} {% block content %}
+
+<meta charset="UTF-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+<!-- Adyen CSS from TEST environment (change to https://checkoutshopper-live.cdn... for production)-->
+<!-- Embed the Adyen Web script element above any other JavaScript in your checkout page. -->
+<script
+  src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.68.0/adyen.js"
+  crossorigin="anonymous"
+></script>
+
+<!-- Embed the Adyen Web stylesheet. You can add your own styling by overriding the rules in the CSS file -->
+<link
+  rel="stylesheet"
+  href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.68.0/adyen.css"
+  crossorigin="anonymous"
+/>
+
+<div id="clientKey" class="hidden">{{ client_key }}</div>
+
+<div id="payment-page">
+  <div class="container">
+    <div class="payment-container">
+      <div id="component-container" class="payment">
+        <!-- Component will be rendered here -->
+      </div>
+      <div
+        id="pay-later-message"
+        data-pp-message
+        data-pp-style-layout="text"
+        data-pp-style-logo-type="inline"
+        data-pp-style-text-color="black"
+        data-pp-style-text-size="12"
+        data-pp-amount="1000"
+        data-pp-placement="payment"
+      ></div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/sessions/paypalv5.js') }}"></script>
+{% endblock %}

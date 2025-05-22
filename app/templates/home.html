@@ -1,0 +1,139 @@
+{% extends "layout.html" %}
+{% block content %}
+    <div class='main-container'>
+        <div class="home-info">
+            <h1>Select a demo</h1>
+            <p>Click to view an interactive example of a PCI-compliant UI integration for online payments.</p>
+            <p>
+                Make sure the payment method you want to use are enabled for your account.
+                Refer <a href="https://docs.adyen.com/payment-methods#add-payment-methods-to-your-account">the
+                documentation</a> to add missing
+                payment methods.
+            </p>
+            <p>To learn more about client-side integration solutions, check out <a
+                    href="https://docs.adyen.com/checkout">Online payments.</a></p>
+            
+        </div>
+        <div>
+            <h1 id="integration-flows">/sessions integrations</h1>
+        </div>
+        <ul class="integration-list">
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="sessions", integration="dropin") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Drop-in</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="sessions", integration="card") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Card</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="sessions", integration="split-debit-credit-card") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Debit/Credit Card</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="sessions", integration="ideal") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">iDEAL</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="sessions", integration="googlepay") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Google Pay</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="sessions", integration="sepa") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Sepa Direct Debit</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="sessions", integration="klarna") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Klarna</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="sessions", integration="paypal") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">PayPal</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="sessions", integration="paypalv5") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">PayPal v5</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="sessions", integration="paypalExpress") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">PayPal Express</p>
+                    </div>
+                </a>
+            </li>
+        </ul>
+        <h1 id="integration-flows">Advanced flow integrations</h1>
+        <ul class="integration-list">
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="dropin") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Drop-in</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="klarna") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Klarna</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="paypalExpress") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">PayPal Express</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="googlePay") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Google Pay</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="card") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Card</p>
+                    </div>
+                </a>
+            </li>
+                        <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="storedPaymentMethodsManagement") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Manage Stored Payment Methods</p>
+                    </div>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+{% endblock %}
