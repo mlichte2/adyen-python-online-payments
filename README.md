@@ -1,8 +1,17 @@
+# TS Python x Web Integration
+
 ## Setup
 
-- create new file file `.env` and add variables outlined in `example.env`
+- navigate, or create, the folder you'd like to install this integration
+- clone repo `git clone https://github.com/mlichte2/adyen-python-online-payments.git`
 
+- rename `example.env` to `.env` and add your env variables
 - run `./setup.sh`
-- run `./start.sh`
 
-navigate to http://localhost:8080
+## Running Integration
+
+- run `./start.sh`
+- navigate to http://localhost:8080
+- test away!
+
+## Project Structure
