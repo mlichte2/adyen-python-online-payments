@@ -16,6 +16,7 @@ const paymentsData = {
     returnUrl: "http://" + window.location.host + "/handleShopperRedirect",
     shopperEmail: "test@adyen.com",
     shopperReference: "123",
+    redirectFromIssuerMethod: "POST",
     lineItems: [
         {
             "quantity": "1",

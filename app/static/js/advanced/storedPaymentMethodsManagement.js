@@ -26,6 +26,11 @@ async function startCheckout() {
       environment: "test",
       countryCode: paymentMethodsData.countryCode,
       showPayButton: true,
+      translations: {
+        "en-US": {
+          "payButton": "Continue"
+        }
+      },
       onSubmit: async (state, component, actions) => {
         try {
           // Make a POST /payments request from your server.

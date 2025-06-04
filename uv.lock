@@ -1,0 +1,212 @@
+version = 1
+revision = 2
+requires-python = ">=3.13"
+
+[[package]]
+name = "adyen"
+version = "13.4.0"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/adyen/13.4.0/adyen-13.4.0.tar.gz", hash = "md5:a06f6b92b13228820b934df12d41850f" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/adyen/13.4.0/Adyen-13.4.0-py3-none-any.whl", hash = "md5:df641717fc6f0cc874812d616e668658" },
+]
+
+[[package]]
+name = "adyen-python-online-payments-copy"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "adyen" },
+    { name = "flask" },
+    { name = "python-dotenv" },
+    { name = "requests" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "adyen", specifier = ">=13.4.0" },
+    { name = "flask", specifier = ">=3.1.1" },
+    { name = "python-dotenv", specifier = ">=1.1.0" },
+    { name = "requests", specifier = ">=2.32.3" },
+]
+
+[[package]]
+name = "blinker"
+version = "1.9.0"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/blinker/1.9.0/blinker-1.9.0.tar.gz", hash = "md5:1ffce54aca3d568ab18ee921d479274f" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/blinker/1.9.0/blinker-1.9.0-py3-none-any.whl", hash = "md5:26605819b98a22f8bc46ee0eb2e0d4d2" },
+]
+
+[[package]]
+name = "certifi"
+version = "2025.4.26"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/certifi/2025.4.26/certifi-2025.4.26.tar.gz", hash = "md5:507ac42a33a6ea8e9629f5624455c2bf" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/certifi/2025.4.26/certifi-2025.4.26-py3-none-any.whl", hash = "md5:2e5db33ebc696e3759337175b57f661b" },
+]
+
+[[package]]
+name = "charset-normalizer"
+version = "3.4.2"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2.tar.gz", hash = "md5:dba168d11ed32cc2ed0786ae2f137656" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-cp313-cp313-macosx_10_13_universal2.whl", hash = "md5:bb6785ff6105f2da4855b0057ce2cf36" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "md5:73044e0301004f037969b9f12ef076e0" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-cp313-cp313-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "md5:037d44ff14b55762369aad8a66e75713" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-cp313-cp313-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "md5:fc7bdf6954ffbbc25bb40a25abf98b7b" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "md5:33e977b54a1ee45dbead0da58594fa8f" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "md5:8def832fc5fd5f0833e6df6480e0cb21" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "md5:7e43ed5ac0678f146a51c04e18421e89" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-cp313-cp313-musllinux_1_2_i686.whl", hash = "md5:f3311f81eb37f600c8e698f7631897f3" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-cp313-cp313-musllinux_1_2_ppc64le.whl", hash = "md5:ab7d5ae375ddcd2f16ad319dd5061894" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-cp313-cp313-musllinux_1_2_s390x.whl", hash = "md5:5421a973d0ddefba35f25643b6c11618" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "md5:b99180bc51aa107ab99517498a29dc45" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-cp313-cp313-win32.whl", hash = "md5:f6d734587b58cf22676d2b3cc550bb6c" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-cp313-cp313-win_amd64.whl", hash = "md5:012a0fd02196ccf9830a8b7ff4328838" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/charset-normalizer/3.4.2/charset_normalizer-3.4.2-py3-none-any.whl", hash = "md5:c01627b6cf9e3968fe712f585a90ab5a" },
+]
+
+[[package]]
+name = "click"
+version = "8.2.0"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+dependencies = [
+    { name = "colorama", marker = "sys_platform == 'win32'" },
+]
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/click/8.2.0/click-8.2.0.tar.gz", hash = "md5:b9d7fc7a25f30674c85da6f460628a17" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/click/8.2.0/click-8.2.0-py3-none-any.whl", hash = "md5:51c9b58938615d583e0829bf27e141df" },
+]
+
+[[package]]
+name = "colorama"
+version = "0.4.6"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/colorama/0.4.6/colorama-0.4.6.tar.gz", hash = "md5:11fe1cbf8299798551ac88f824ea11c4" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/colorama/0.4.6/colorama-0.4.6-py2.py3-none-any.whl", hash = "md5:3fc7a89530d68d7ea231ebe779c0db9c" },
+]
+
+[[package]]
+name = "flask"
+version = "3.1.1"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+dependencies = [
+    { name = "blinker" },
+    { name = "click" },
+    { name = "itsdangerous" },
+    { name = "jinja2" },
+    { name = "markupsafe" },
+    { name = "werkzeug" },
+]
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/flask/3.1.1/flask-3.1.1.tar.gz", hash = "md5:59dc1b0772bab098aff83e8008e97af6" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/flask/3.1.1/flask-3.1.1-py3-none-any.whl", hash = "md5:ce31ab1b9c6faaf9436a70008ed44492" },
+]
+
+[[package]]
+name = "idna"
+version = "3.10"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/idna/3.10/idna-3.10.tar.gz", hash = "md5:28448b00665099117b6daa9887812cc4" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/idna/3.10/idna-3.10-py3-none-any.whl", hash = "md5:ce22685f1b296fb33e5fda362870685d" },
+]
+
+[[package]]
+name = "itsdangerous"
+version = "2.2.0"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/itsdangerous/2.2.0/itsdangerous-2.2.0.tar.gz", hash = "md5:a901babde35694c3577f7655010cd380" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/itsdangerous/2.2.0/itsdangerous-2.2.0-py3-none-any.whl", hash = "md5:22e41bfb2008481e855f1693a9df4c54" },
+]
+
+[[package]]
+name = "jinja2"
+version = "3.1.6"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+dependencies = [
+    { name = "markupsafe" },
+]
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/jinja2/3.1.6/jinja2-3.1.6.tar.gz", hash = "md5:66d4c25ff43d1deaf9637ccda523dec8" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/jinja2/3.1.6/jinja2-3.1.6-py3-none-any.whl", hash = "md5:845b37cea56edd0f4dbd949244e9d798" },
+]
+
+[[package]]
+name = "markupsafe"
+version = "3.0.2"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/markupsafe-3.0.2.tar.gz", hash = "md5:cb0071711b573b155cc8f86e1de72167" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313-macosx_10_13_universal2.whl", hash = "md5:61b7f0ac7934ec5f77f618a118290aae" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313-macosx_11_0_arm64.whl", hash = "md5:387145a7d04e0aff57ad3cfef3dc8e4c" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "md5:fa088e4c9d2d961e95ead0ec49150fac" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "md5:95fb4949e76f6563b50b98754a4bfbcd" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "md5:1bb6675f822a8f45dbe2428bd78f0764" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313-musllinux_1_2_aarch64.whl", hash = "md5:b2f28445dfa160e84167a7a6fc1f3423" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313-musllinux_1_2_i686.whl", hash = "md5:d46e2af7d2de2cb0772b44c2f83f6161" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313-musllinux_1_2_x86_64.whl", hash = "md5:9b5fa718655c6ebe7b41d3187e97049e" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313-win32.whl", hash = "md5:e2a30bb65f0b961933335c1dc55a6e40" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313-win_amd64.whl", hash = "md5:9a8b63fed0c2dbb19a4e9c27dbfdc2cc" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313t-macosx_10_13_universal2.whl", hash = "md5:2c380212ebd8a00ef1d46f314bebffa6" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313t-macosx_11_0_arm64.whl", hash = "md5:7ccad0fa3006cfd1ed4ab338eaf34657" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313t-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "md5:6629d68f5f880b923ecc787a83c2e73b" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313t-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "md5:f9af152a9d18a52b04f92f6341c123f8" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313t-manylinux_2_5_i686.manylinux1_i686.manylinux_2_17_i686.manylinux2014_i686.whl", hash = "md5:967e18669da8dc2e87fb5b588243d854" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313t-musllinux_1_2_aarch64.whl", hash = "md5:149172c0e7d29bff57c7c401f251c76f" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313t-musllinux_1_2_i686.whl", hash = "md5:c0649b95b68884447ff8050c3ef1c7ce" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313t-musllinux_1_2_x86_64.whl", hash = "md5:02413439ead82702a4a8aeb07b0bf12d" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313t-win32.whl", hash = "md5:f5d80fa2b81d4454448da140a62b07d3" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/markupsafe/3.0.2/MarkupSafe-3.0.2-cp313-cp313t-win_amd64.whl", hash = "md5:de664f868ca863ce52ea5e9ef876a8cf" },
+]
+
+[[package]]
+name = "python-dotenv"
+version = "1.1.0"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/python-dotenv/1.1.0/python_dotenv-1.1.0.tar.gz", hash = "md5:9bdf50416b1c59832d2f77ad6afdf0d8" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/python-dotenv/1.1.0/python_dotenv-1.1.0-py3-none-any.whl", hash = "md5:8665b18d669404e2a75bb49410d33393" },
+]
+
+[[package]]
+name = "requests"
+version = "2.32.3"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+dependencies = [
+    { name = "certifi" },
+    { name = "charset-normalizer" },
+    { name = "idna" },
+    { name = "urllib3" },
+]
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/requests/2.32.3/requests-2.32.3.tar.gz", hash = "md5:fa3ee5ac3f1b3f4368bd74ab530d3f0f" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/requests/2.32.3/requests-2.32.3-py3-none-any.whl", hash = "md5:83d50f7980b330c48f3bfe86372adcca" },
+]
+
+[[package]]
+name = "urllib3"
+version = "2.4.0"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/urllib3/2.4.0/urllib3-2.4.0.tar.gz", hash = "md5:787104cdecd70e6688713f8a079ffd3f" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/urllib3/2.4.0/urllib3-2.4.0-py3-none-any.whl", hash = "md5:b38b9d8501f98140c591986989a0985f" },
+]
+
+[[package]]
+name = "werkzeug"
+version = "3.1.3"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+dependencies = [
+    { name = "markupsafe" },
+]
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/werkzeug/3.1.3/werkzeug-3.1.3.tar.gz", hash = "md5:b6005d403d01d08b9fe2330a0cfea05a" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/werkzeug/3.1.3/werkzeug-3.1.3-py3-none-any.whl", hash = "md5:ff3a2b0d0953eadee90c945d879c5aac" },
+]

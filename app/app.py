@@ -2,7 +2,7 @@ import logging
 
 import Adyen
 from Adyen.util import is_valid_hmac_notification
-from flask import Flask, render_template, send_from_directory, request
+from flask import Flask, render_template, send_from_directory, request, Response
 import json
 import requests
 
@@ -180,13 +180,18 @@ def create_app():
         adyen.payment.client.xapikey = get_adyen_api_key()
         adyen.payment.client.platform = "test"  # change to live for production
 
+        try:
+            http_response = adyen.checkout.recurring_api.delete_token_for_stored_payment_details(query_parameters=query_parameters, storedPaymentMethodId=params["storedPaymentMethodId"])
+            print(http_response)
 
-        http_response = adyen.checkout.recurring_api.delete_token_for_stored_payment_details(query_parameters=query_parameters, recurringId=params["storedPaymentMethodId"])
-        print(http_response)
+            print(f"\nDELETE storedPaymentMethods/{params['storedPaymentMethodId']} | SUCCESS")
 
-        print(f"\nDELETE storedPaymentMethods/{params['storedPaymentMethodId']}")
+            return Response(status=200)
+        except:
+            print(f"\nDELETE storedPaymentMethods/{params['storedPaymentMethodId']} | FAILED")
 
-        return "200"
+            return Response(status=422)
+
         
 
     @app.route('/result/success', methods=['GET'])
@@ -221,12 +226,18 @@ def create_app():
 
         # Payload for payment/details call
         redirect_data = request.args if request.method == 'GET' else request.form
+
+        print(request.method)
+        print(redirect_data)
+        
         details = {}
 
         if 'redirectResult' in redirect_data:
             details['redirectResult'] = redirect_data['redirectResult']
         elif 'payload' in redirect_data:
             details['payload'] = redirect_data['payload']
+        else: 
+            details.update(dict(redirect_data))
 
         try:
             http_response = adyen.checkout.payments_api.payments_details({ "details": details })

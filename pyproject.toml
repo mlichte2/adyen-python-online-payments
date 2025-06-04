@@ -1,0 +1,12 @@
+[project]
+name = "TS-python-integration"
+version = "0.1.0"
+description = "A testing suite for Adyen Web"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "adyen>=13.4.0",
+    "flask>=3.1.1",
+    "python-dotenv>=1.1.0",
+    "requests>=2.32.3",
+]
