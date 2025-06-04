@@ -12,25 +12,6 @@ wheels = [
 ]
 
 [[package]]
-name = "adyen-python-online-payments-copy"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "adyen" },
-    { name = "flask" },
-    { name = "python-dotenv" },
-    { name = "requests" },
-]
-
-[package.metadata]
-requires-dist = [
-    { name = "adyen", specifier = ">=13.4.0" },
-    { name = "flask", specifier = ">=3.1.1" },
-    { name = "python-dotenv", specifier = ">=1.1.0" },
-    { name = "requests", specifier = ">=2.32.3" },
-]
-
-[[package]]
 name = "blinker"
 version = "1.9.0"
 source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
@@ -188,6 +169,25 @@ dependencies = [
 sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/requests/2.32.3/requests-2.32.3.tar.gz", hash = "md5:fa3ee5ac3f1b3f4368bd74ab530d3f0f" }
 wheels = [
     { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/requests/2.32.3/requests-2.32.3-py3-none-any.whl", hash = "md5:83d50f7980b330c48f3bfe86372adcca" },
+]
+
+[[package]]
+name = "ts-python-integration"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "adyen" },
+    { name = "flask" },
+    { name = "python-dotenv" },
+    { name = "requests" },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "adyen", specifier = ">=13.4.0" },
+    { name = "flask", specifier = ">=3.1.1" },
+    { name = "python-dotenv", specifier = ">=1.1.0" },
+    { name = "requests", specifier = ">=2.32.3" },
 ]
 
 [[package]]
