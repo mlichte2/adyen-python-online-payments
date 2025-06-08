@@ -172,6 +172,31 @@ wheels = [
 ]
 
 [[package]]
+name = "ruff"
+version = "0.11.11"
+source = { registry = "https://nexus-pip-mirror.is.adyen.com/repository/all/simple/" }
+sdist = { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11.tar.gz", hash = "md5:453b96ff0081ab669b47eaaaa0fd4f78" }
+wheels = [
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-linux_armv6l.whl", hash = "md5:434b6f87495cb891760dde7040522c3a" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-macosx_10_12_x86_64.whl", hash = "md5:32185d5fee753a656cfb325078b13deb" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-macosx_11_0_arm64.whl", hash = "md5:91ecc1cff5c45c942d60ff03c6c3e78b" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "md5:9e00ca6b74e8c84596927734b4205dcf" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-manylinux_2_17_armv7l.manylinux2014_armv7l.whl", hash = "md5:8906f58c84cb32bf56a83291912c289b" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "md5:72e67a5c1f51d21bb7c73312e64d769c" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-manylinux_2_17_ppc64.manylinux2014_ppc64.whl", hash = "md5:a486e27c171204bad1aac366da7e847f" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-manylinux_2_17_ppc64le.manylinux2014_ppc64le.whl", hash = "md5:150f060047a93afb1437604e3009b9c7" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-manylinux_2_17_s390x.manylinux2014_s390x.whl", hash = "md5:54679ec37d3d78984bb20fb93abfb087" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "md5:f69221bc6190d8279ff03c6a4a11db41" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-musllinux_1_2_aarch64.whl", hash = "md5:d70890bad5e091a52765859d84a5c440" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-musllinux_1_2_armv7l.whl", hash = "md5:b1c8bf52a36ff79e4c718b58b9261d72" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-musllinux_1_2_i686.whl", hash = "md5:a88d8a76f887158a49b48182d2d69395" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-musllinux_1_2_x86_64.whl", hash = "md5:b14176614c7ca57cba7a3504ddc5c9db" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-win32.whl", hash = "md5:e76e68afc5b6bd8febd366978e25e54b" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-win_amd64.whl", hash = "md5:7e10367944eada901eb63a8f23e4469b" },
+    { url = "https://nexus-pip-mirror.is.adyen.com/repository/all/packages/ruff/0.11.11/ruff-0.11.11-py3-none-win_arm64.whl", hash = "md5:0ecadca3f14e1bdedefe99a4e7dd30ab" },
+]
+
+[[package]]
 name = "ts-python-integration"
 version = "0.1.0"
 source = { virtual = "." }
@@ -182,6 +207,11 @@ dependencies = [
     { name = "requests" },
 ]
 
+[package.dev-dependencies]
+dev = [
+    { name = "ruff" },
+]
+
 [package.metadata]
 requires-dist = [
     { name = "adyen", specifier = ">=13.4.0" },
@@ -189,6 +219,9 @@ requires-dist = [
     { name = "python-dotenv", specifier = ">=1.1.0" },
     { name = "requests", specifier = ">=2.32.3" },
 ]
+
+[package.metadata.requires-dev]
+dev = [{ name = "ruff", specifier = ">=0.11.11" }]
 
 [[package]]
 name = "urllib3"

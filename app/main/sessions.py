@@ -1,6 +1,5 @@
 import Adyen
 import json
-import uuid
 from main.config import get_adyen_api_key, get_adyen_merchant_account
 
 '''
