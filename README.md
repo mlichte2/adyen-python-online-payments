@@ -3,7 +3,6 @@
 ## Setup
 
 - ensure [uv](https://docs.astral.sh/uv/) is installed (can be found in MSC)
-- ensure python3.13 is installed (also found in MSC)
 
 - navigate, or create, the folder you'd like to install this integration
 - clone repo `git clone https://github.com/mlichte2/adyen-python-online-payments.git`
@@ -44,7 +43,7 @@
 
 ## Changing API Version
 
-- Can be set in .env file by changing the `CHECKOUT_API_VERSION` variable. This may require restarting the server to load the new variable.
+- Can be set in .env file by changing the `CHECKOUT_API_VERSION` variable. This may require restarting the server (to close "ctrl + c" | to start run "./start.sh") to load the new variable.
 
 ## How to Add Components
 
