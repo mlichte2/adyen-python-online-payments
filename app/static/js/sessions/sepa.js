@@ -7,12 +7,6 @@ async function createAdyenCheckout(session) {
     session: session,
     clientKey,
     environment: "test",
-    amount: {
-      value: 10000,
-      currency: 'EUR'
-    },
-    locale: "en_US",
-    countryCode: 'NL',
     showPayButton: true,
     onPaymentCompleted: (result, component) => {
       console.info("onPaymentCompleted", result, component);
