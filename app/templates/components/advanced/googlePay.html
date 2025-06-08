@@ -7,16 +7,16 @@
 />
 <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-<!-- Adyen CSS from TEST environment (change to https://checkoutshopper-live.cdn... for production)-->
+<!-- Web Version can be changed in app/app.py variable WEB_VERSION = "x.x.x"-->
+
 <link
   rel="stylesheet"
-  href="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/6.11.0/adyen.css"
+  href="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.css"
   crossorigin="anonymous"
 />
 
-<!-- Adyen JS from TEST environment (change to https://checkoutshopper-live.cdn... for production)-->
 <script
-  src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/6.11.0/adyen.js"
+  src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.js"
   crossorigin="anonymous"
 ></script>
 

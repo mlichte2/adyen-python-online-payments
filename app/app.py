@@ -15,6 +15,9 @@ from main.payments_details import adyen_payments_details
 from main.config import *
 
 
+WEB_VERSION = "6.13.0"
+
+
 def create_app():
     logging.basicConfig(format='%(asctime)s - %(levelname)s - %(message)s', level=logging.INFO)
     logging.getLogger('werkzeug').setLevel(logging.ERROR)
@@ -37,7 +40,7 @@ def create_app():
     # Display page with component
     @app.route('/checkout/<flow>/<integration>')
     def dropin(integration, flow):
-        return render_template('components/'+ flow + '/' + integration + '.html', method=integration, client_key=get_adyen_client_key())
+        return render_template('components/'+ flow + '/' + integration + '.html', method=integration, client_key=get_adyen_client_key(), web_version=WEB_VERSION)
 
     # Perform /sessions call
     @app.route('/api/sessions', methods=['POST'])

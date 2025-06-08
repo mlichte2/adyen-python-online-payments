@@ -38,6 +38,10 @@
     - `paymentMethodsData` contains the `/paymentMethods` JSON
     - `paymentsData` inherits all the values in `paymentMethodsData` and contains the `/payments` JSON
 
+## Changing Web Version
+
+- Edit the WEB_VERSION parameter in `app/app.py` to your perfered web version. Currently only setup for v6 integrations -- v5 integrations must be edited in the html file (ie paypalv5.html).
+
 ## How to Add Components
 
 - create a file in both `app/templates/components/{flow}` and `app/static/js/{flow}` with flow being either advanced or sessions
