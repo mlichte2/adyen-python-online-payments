@@ -45,6 +45,15 @@ def get_adyen_hmac_key():
     return adyen_hmac_key
 
 
+def get_adyen_checkout_api_verson():
+    adyen_checkout_api_verson = os.environ.get("CHECKOUT_API_VERSION")
+
+    if not adyen_checkout_api_verson:
+        raise Exception("Missing CHECKOUT_API_VERSION in .env")
+
+    return adyen_checkout_api_verson
+
+
 def get_supported_integration():
     return ['dropin', 'card', 'ideal', 'klarna', 'directEbanking', 'alipay', 'boletobancario',
             'sepadirectdebit', 'dotpay', 'giropay', 'ach', 'paypal', 'applepay',

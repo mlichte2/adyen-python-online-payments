@@ -243,9 +243,9 @@ def create_app():
             details.update(dict(redirect_data))
 
         try:
-            http_response = adyen.checkout.payments_api.payments_details({ "details": details })
+            http_response = adyen_payments_details({ "details": details })
 
-            response = json.loads(http_response.raw_response)
+            response = json.loads(http_response)
             print("/paymentDetails response:\n" + str(response))
 
             # Display resultCode to shopper
