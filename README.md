@@ -2,7 +2,8 @@
 
 ## Setup
 
-- ensure uv is installed (can be found in MSC)
+- ensure [uv](https://docs.astral.sh/uv/) is installed (can be found in MSC)
+- ensure python3.13 is installed (also found in MSC)
 
 - navigate, or create, the folder you'd like to install this integration
 - clone repo `git clone https://github.com/mlichte2/adyen-python-online-payments.git`
@@ -43,3 +44,11 @@
 - i typically copy the html from an existing file (ie card.html) and edit line 37 to import the newly created js file in the script tag
 - go to `app/templates/home.html` and create a new list item for the new integration
   - be sure to put it under the correct integration type h1 (sessions or advanced) and change the integration parameter to be equal to html filename without .html (ie if the new js file is `newPaymentMethod.html` pass `integration="newPaymentMethod"`)
+
+## Drop-in Demo
+
+At `app/static/js/advanced/dropinDemo.js` you will find a file for the purposes of creating the Drop-in with the Advanced flow.
+
+The only thing that needs to be edited is the .js file, the backend is already setup, and you just need to connect the two.
+
+Follow the instructions outlined in Adyen's documentation [here](https://docs.adyen.com/online-payments/build-your-integration/advanced-flow/?platform=Web&integration=Drop-in&version=6.6.0).
