@@ -51,6 +51,7 @@
 - i typically copy the html from an existing file (ie card.html) and edit line 37 to import the newly created js file in the script tag
 - go to `app/templates/home.html` and create a new list item for the new integration
   - be sure to put it under the correct integration type h1 (sessions or advanced) and change the integration parameter to be equal to html filename without .html (ie if the new js file is `newPaymentMethod.html` pass `integration="newPaymentMethod"`)
+- example commit [here](https://github.com/mlichte2/adyen-python-online-payments/commit/fd3127d78d3b99bb4c0c6465995853ad9fc984b8)
 
 ## Drop-in Demo
 
