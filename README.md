@@ -119,10 +119,7 @@ Follow these steps to add a new payment method component to the demo.
 
     - In your new HTML file, update the `<script>` tag to import your newly created JavaScript file. For example:
       ```html
-      <script
-        src="{{ url_for('static', filename='js/{flow}/your-new-component.js') }}"
-        type="module"
-      ></script>
+      <script src="{{ url_for('static', filename='js/{flow}/your-new-component.js') }}"></script>
       ```
 
 3.  **Add the Component to the Homepage**
@@ -130,8 +127,12 @@ Follow these steps to add a new payment method component to the demo.
     - Under the correct heading (`Sessions Flow` or `Advanced Flow`), add a new list item (`<li>`) that links to your new component.
     - Set the `integration` parameter to match your HTML filename (without the `.html` extension).
       ```html
-      <li class="integration-list-item" data-integration="your-new-component">
-        <a href="/preview?integration=your-new-component">Your New Component</a>
+      <li class="integration-list-item">
+        <a class="integration-list-item-link" href="{{ url_for('cart', flow="{sessions or advanced}", integration="your-new-component") }}">
+            <div class="title-container">
+                <p class="integration-list-item-title">Your New Component</p>
+            </div>
+        </a>
       </li>
       ```
 
