@@ -1,0 +1,79 @@
+{% extends "layout.html" %} {% block content %}
+
+<meta charset="UTF-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+<!-- Web Version can be changed in app/app.py variable WEB_VERSION = "x.x.x"-->
+
+<link
+  rel="stylesheet"
+  href="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.css"
+  crossorigin="anonymous"
+/>
+
+<script
+  src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.js"
+  crossorigin="anonymous"
+></script>
+
+<style>
+  /* Set a specific size for the secure fields containers */
+  span[data-cse] {
+    display: block;
+    height: 40px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 8px;
+    box-sizing: border-box;
+  }
+
+  /* Style the container for better layout */
+  .iframe-container {
+    margin-bottom: 15px;
+  }
+
+  /* Ensure labels are displayed correctly */
+  label {
+    display: block;
+    margin-bottom: 5px;
+  }
+</style>
+
+<div id="clientKey" class="hidden">{{ client_key }}</div>
+
+<div id="payment-page">
+  <div class="container">
+    <div class="payment-container">
+      <div id="customCard-container" class="payment">
+        <div class="iframe-container">
+          <label>
+            <span>Card number:</span>
+            <span data-cse="encryptedCardNumber"></span>
+          </label>
+        </div>
+        <div class="iframe-container">
+          <label>
+            <span>Expiry date:</span>
+            <span data-cse="encryptedExpiryDate"></span>
+          </label>
+        </div>
+        <div class="iframe-container">
+          <label>
+            <span>CVV/CVC:</span>
+            <span data-cse="encryptedSecurityCode"></span>
+          </label>
+        </div>
+        <div id="pay-button-container">
+          <!-- The Pay button will be rendered here by customCard.js -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/advanced/customCard.js') }}"></script>
+{% endblock %}

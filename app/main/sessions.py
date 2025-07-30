@@ -25,7 +25,7 @@ def adyen_sessions(host_url):
     adyen.payment.client.api_checkout_version = get_adyen_checkout_api_verson()
 
     request = {
-        "splitCardFundingSources": "True",
+        "blockedPaymentMethods": [],
         "merchantAccount": "ADYEN_MERCHANT_ACCOUNT",
         "shopperInteraction": "ContAuth",
         "recurringProcessingModel": "CardOnFile",

@@ -3,9 +3,9 @@
 const paymentMethodsData = {
     amount: {
         value: 2495,
-        currency: "USD"
+        currency: "EUR"
     },
-    countryCode: "US"
+    countryCode: "NL"
 }
 
 // the data sent in the /payments call

@@ -122,7 +122,16 @@ async function startCheckout() {
     };
 
     const googlePayConfig = {
-
+      // type: "paywithgoogle",
+      // amount: {
+      //   currency: "USD",
+      //   value: 10000
+      // },
+      // configuration: {
+      //     merchantId: "BCR2DN4T27YJLNKI",
+      //     gatewayMerchantId: 'ChicagoTechSupport',
+      //     merchantName: 'Adyen Test Merchant',
+      // },
     };
 
     const checkout = await AdyenCheckout(configuration);

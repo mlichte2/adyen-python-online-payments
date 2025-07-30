@@ -15,7 +15,7 @@ from main.payments_details import adyen_payments_details
 from main.config import *
 
 
-WEB_VERSION = "6.13.0"
+WEB_VERSION = "6.6.0"
 
 
 def create_app():

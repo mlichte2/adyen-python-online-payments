@@ -3,26 +3,34 @@ const { AdyenCheckout, Card } = window.AdyenWeb;
 
 // Function to create AdyenCheckout instance
 async function createAdyenCheckout(session) {
-  return AdyenCheckout(
-    {
-      session: session,
-      clientKey,
-      environment: "test",
-      locale: "en_US",
-      onPaymentCompleted: (result, component) => {
-        console.info("onPaymentCompleted", result, component);
-        handleOnPaymentCompleted(result.resultCode);
-      },
-      onPaymentFailed: (result, component) => {
-        console.info("onPaymentFailed", result, component);
+  return AdyenCheckout({
+    session: session,
+    clientKey,
+    environment: "test",
+    locale: "en_US",
+    beforeSubmit: (data, component, actions) => {
+      console.dir(data);
+      actions.resolve(data);
+    },
+    onPaymentCompleted: (result, component) => {
+      console.info("onPaymentCompleted", result, component);
+      handleOnPaymentCompleted(result.resultCode);
+    },
+    onPaymentFailed: (result, component) => {
+      console.info("onPaymentFailed", result, component);
       handleOnPaymentFailed(result.resultCode);
-      },
-      onError: (error, component) => {
-        console.error("onError", error.name, error.message, error.stack, component);
-        window.location.href = "/result/error";
-      },
-    }
-  );
+    },
+    onError: (error, component) => {
+      console.error(
+        "onError",
+        error.name,
+        error.message,
+        error.stack,
+        component
+      );
+      window.location.href = "/result/error";
+    },
+  });
 }
 
 // Function to handle payment completion redirects
@@ -56,33 +64,30 @@ function handleOnPaymentFailed(resultCode) {
 
 // Function to start checkout
 async function startCheckout() {
-
   try {
-    const session = await fetch('/api/sessions', {
-      method: 'POST',
+    const session = await fetch("/api/sessions", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-      }
-    }).then(response => response.json());
+        "Content-Type": "application/json",
+      },
+    }).then((response) => response.json());
 
     const checkout = await createAdyenCheckout(session);
     const card = new Card(checkout, {
-      
       // // Optional configuration.
-      // billingAddressRequired: false, // when true show the billing address input fields and mark them as required.
-      // showBrandIcon: true, // when false not showing the brand logo 
+      billingAddressRequired: true, // when true show the billing address input fields and mark them as required.
+      // showBrandIcon: true, // when false not showing the brand logo
       // hasHolderName: true, // show holder name
       // holderNameRequired: true, // make holder name mandatory
       // // configure placeholders
-      // placeholders: { 
+      // placeholders: {
       //   cardNumber: '1234 5678 9012 3456',
-      //   expiryDate: 'MM/YY', 
-      //   securityCodeThreeDigits: '123', 
+      //   expiryDate: 'MM/YY',
+      //   securityCodeThreeDigits: '123',
       //   securityCodeFourDigits: '1234',
       //   holderName: 'J. Smith'
       // }
-    }).mount('#component-container');
-
+    }).mount("#component-container");
   } catch (error) {
     console.error(error);
     alert("Error occurred. Look at console for details");

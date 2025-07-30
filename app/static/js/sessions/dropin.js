@@ -15,21 +15,16 @@ async function startCheckout() {
       session: session,
       clientKey,
       environment: "test",
-      locale: "fr_FR",
-      countryCode: "CA",
+      locale: "en_US",
+      countryCode: "US",
       showPayButton: true,
-      translations: {
-        "fr-FR": {
-          "creditCard.securityCode.label": "CVV/CVC",
-          "payButton.value": "Pay"
-        },
-      },
-      onAdditionalDetails: (state, component, actions)  => {
-        console.log("state: " + state + "\n")
-
+      translations: {},
+      onAdditionalDetails: (state, component, actions) => {
+        console.log("state: " + state + "\n");
       },
       onPaymentCompleted: (result, component) => {
         console.info("onPaymentCompleted", result, component);
+        console.log(result.sessionResult);
         handleOnPaymentCompleted(result, component);
       },
       onPaymentFailed: (result, component) => {
@@ -37,7 +32,13 @@ async function startCheckout() {
         handleOnPaymentFailed(result, component);
       },
       onError: (error, component) => {
-        console.error("onError", error.name, error.message, error.stack, component);
+        console.error(
+          "onError",
+          error.name,
+          error.message,
+          error.stack,
+          component
+        );
         window.location.href = "/result/error";
       },
     };
