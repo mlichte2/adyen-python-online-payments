@@ -15,7 +15,7 @@ from main.payments_details import adyen_payments_details
 from main.config import *
 
 
-WEB_VERSION = "6.6.0"
+WEB_VERSION = "6.27.0"
 
 
 def create_app():
@@ -195,6 +195,47 @@ def create_app():
 
             return Response(status=422)
 
+    @app.route('/api/createOrder', methods=['POST'])
+    def create_order():
+        params = request.json
+
+        adyen = Adyen.Adyen()
+        adyen.payment.client.xapikey = get_adyen_api_key()
+        adyen.payment.client.platform = "test"  # change to live for production
+        
+        params["merchantAccount"] = get_adyen_merchant_account()
+
+        result = adyen.checkout.orders_api.orders(request=params)
+
+        return result.message
+
+    @app.route('/api/paymentMethods/balance', methods=['POST'])
+    def get_balance_of_gift_card():
+        params = request.json
+
+        adyen = Adyen.Adyen()
+        adyen.payment.client.xapikey = get_adyen_api_key()
+        adyen.payment.client.platform = "test"  # change to live for production
+        
+        params["merchantAccount"] = get_adyen_merchant_account()
+
+        result = adyen.checkout.orders_api.get_balance_of_gift_card(request=params)
+
+        return result.message
+
+    @app.route('/api/orders/cancel', methods=['POST'])
+    def cancel_order():
+        params = request.json
+
+        adyen = Adyen.Adyen()
+        adyen.payment.client.xapikey = get_adyen_api_key()
+        adyen.payment.client.platform = "test"  # change to live for production
+        
+        params["merchantAccount"] = get_adyen_merchant_account()
+
+        result = adyen.checkout.orders_api.cancel_order(request=params)
+
+        return result.message
         
 
     @app.route('/result/success', methods=['GET'])
@@ -221,6 +262,8 @@ def create_app():
     @app.route('/handleShopperRedirect', methods=['GET', 'POST'])
     def handle_shopper_redirect():
         print("/handleShopperRedirect")
+
+        print(request.method)
 
         adyen = Adyen.Adyen()
         adyen.payment.client.xapikey = get_adyen_api_key()
@@ -307,5 +350,3 @@ if __name__ == '__main__':
 
     logging.info(f"Running on http://localhost:{get_port()}")
     web_app.run(debug=True, port=get_port(), host='0.0.0.0')
-
-
