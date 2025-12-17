@@ -127,6 +127,13 @@
                 </a>
             </li>
             <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="googlePayExpress") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Google Pay Express</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
                 <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="card") }}">
                     <div class="title-container">
                         <p class="integration-list-item-title">Card</p>
@@ -151,6 +158,34 @@
                 <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="customCard") }}">
                     <div class="title-container">
                         <p class="integration-list-item-title">Custom Card</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="multi-card") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Multi Card (ORDERS API)</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="applePay") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Apple Pay</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="jwe") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">JWE Encryption</p>
+                    </div>
+                </a>
+            </li>
+                        <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="giftcard") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Gift Card Component + Card</p>
                     </div>
                 </a>
             </li>
