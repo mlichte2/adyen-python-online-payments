@@ -1,0 +1,29 @@
+{% extends "layout.html" %} {% block content %}
+<!-- Web Version can be changed in app/app.py variable WEB_VERSION = "x.x.x"-->
+<link
+  rel="stylesheet"
+  href="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.css"
+  crossorigin="anonymous"
+/>
+<script
+  src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.js"
+  crossorigin="anonymous"
+></script>
+
+<div id="clientKey" class="hidden">{{ client_key }}</div>
+
+<div id="payment-page">
+  <div class="container">
+    <div>
+      <h2>Gift Card + Card Component</h2>
+      <!-- Container for the applied gift card summary -->
+      <div id="applied-giftcard-container"></div>
+      <div id="giftcard-container"></div>
+      <br />
+      <div id="card-container"></div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/advanced/giftcard.js') }}"></script>
+{% endblock %}
