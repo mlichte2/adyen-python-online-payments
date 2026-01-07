@@ -12,6 +12,7 @@ from main.sessions import adyen_sessions
 from main.payment_methods import adyen_payment_methods
 from main.payments import adyen_payments
 from main.payments_details import adyen_payments_details
+from main.cardDetails import adyen_card_details
 from main.config import *
 
 
@@ -60,6 +61,15 @@ def create_app():
         
         data = request.json
         print(data)
+
+        if data["paymentMethod"]["type"] == "scheme":
+            encrypted_card_data = {"encryptedCardNumber": data["paymentMethod"]["encryptedCardNumber"]}
+            response = adyen_card_details(encrypted_card_data)
+            # example {"brands": [{"supported": true, "type": "mc"}], "fundingSource": "PREPAID", "issuingCountryCode": "BR"}
+            print(response)
+            
+            # add logic to return error to an error to customer if card fundingSource is unsupported or continue with processing payments
+ 
         return adyen_payments(data)
 
     @app.route('/api/paymentsDetails', methods=['POST'])

@@ -1,0 +1,23 @@
+import Adyen
+import json
+from main.config import get_adyen_api_key, get_adyen_merchant_account, get_adyen_checkout_api_verson
+
+
+def adyen_card_details(data):
+    adyen = Adyen.Adyen()
+    adyen.payment.client.xapikey = get_adyen_api_key()
+    adyen.payment.client.platform = "test"  # change to live for production
+    adyen.payment.client.merchant_account = get_adyen_merchant_account()
+    adyen.payment.client.api_checkout_version = get_adyen_checkout_api_verson()
+
+    request = data
+    request['merchantAccount'] = get_adyen_merchant_account()
+
+    print("/cardDetails request:\n" + str(request))
+
+    result = adyen.checkout.payments_api.card_details(request)
+
+    formatted_response = json.dumps((json.loads(result.raw_response)))
+    print("/cardDetails response:\n" + formatted_response)
+
+    return formatted_response
