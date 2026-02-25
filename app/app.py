@@ -61,8 +61,8 @@ def create_app():
         
         data = request.json
         print(data)
-
-        if data["paymentMethod"]["type"] == "scheme":
+        # adding srcScheme to prevent breaking CTP
+        if data["paymentMethod"]["type"] == "scheme" and not data["paymentMethod"].get("srcScheme") and not data["paymentMethod"].get("storedPaymentMethodId"):
             encrypted_card_data = {"encryptedCardNumber": data["paymentMethod"]["encryptedCardNumber"]}
             response = adyen_card_details(encrypted_card_data)
             # example {"brands": [{"supported": true, "type": "mc"}], "fundingSource": "PREPAID", "issuingCountryCode": "BR"}
