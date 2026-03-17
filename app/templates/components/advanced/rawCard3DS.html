@@ -1,0 +1,77 @@
+{% extends "layout.html" %} {% block content %}
+<!-- Web Version can be changed in app/app.py variable WEB_VERSION = "x.x.x"-->
+<link
+  rel="stylesheet"
+  href="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.css"
+  crossorigin="anonymous"
+/>
+<script
+  src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.js"
+  crossorigin="anonymous"
+></script>
+
+<div id="clientKey" class="hidden">{{ client_key }}</div>
+
+<div id="payment-page">
+  <div class="container">
+    <div class="payment-container" id="raw-card-form">
+      <div class="payment">
+        <div class="form-group">
+          <label for="card-number">Card Number</label>
+          <input
+            type="text"
+            id="card-number"
+            class="form-control"
+            placeholder="4111111111111111"
+            value="4111111111111111"
+          />
+        </div>
+        <div class="form-group">
+          <label for="expiry-month">Expiry Month</label>
+          <input
+            type="text"
+            id="expiry-month"
+            class="form-control"
+            placeholder="03"
+            value="03"
+          />
+        </div>
+        <div class="form-group">
+          <label for="expiry-year">Expiry Year</label>
+          <input
+            type="text"
+            id="expiry-year"
+            class="form-control"
+            placeholder="2030"
+            value="2030"
+          />
+        </div>
+        <div class="form-group">
+          <label for="cvc">CVC</label>
+          <input
+            type="text"
+            id="cvc"
+            class="form-control"
+            placeholder="737"
+            value="737"
+          />
+        </div>
+        <div class="form-group">
+          <label for="holderName">Holder Name</label>
+          <input
+            type="text"
+            id="holderName"
+            class="form-control"
+            placeholder="John Doe"
+          />
+        </div>
+        <button id="pay-button" class="button">Pay</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="checkout-container"></div>
+
+<script src="{{ url_for('static', filename='js/advanced/rawCard3DS.js') }}"></script>
+{% endblock %}
