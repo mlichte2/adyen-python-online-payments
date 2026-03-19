@@ -112,9 +112,35 @@ document.getElementById("pay-button").addEventListener("click", async () => {
           window.location.href = "/result/error";
         },
       });
+      // Create a modal overlay
+      const modalOverlay = document.createElement("div");
+      modalOverlay.id = "modal-overlay";
+      modalOverlay.style.position = "fixed";
+      modalOverlay.style.top = "0";
+      modalOverlay.style.left = "0";
+      modalOverlay.style.width = "100%";
+      modalOverlay.style.height = "100%";
+      modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
+      modalOverlay.style.display = "flex";
+      modalOverlay.style.alignItems = "center";
+      modalOverlay.style.justifyContent = "center";
+      modalOverlay.style.zIndex = "1000";
+
+      // Create a modal container
+      const modalContainer = document.createElement("div");
+      modalContainer.id = "modal-container";
+      modalContainer.style.backgroundColor = "#fff";
+      modalContainer.style.padding = "20px";
+      modalContainer.style.borderRadius = "8px";
+      modalContainer.style.boxShadow = "0 4px 6px rgba(0, 0, 0, 0.1)";
+
+      // Append container to overlay, and overlay to body
+      modalOverlay.appendChild(modalContainer);
+      document.body.appendChild(modalOverlay);
+
       checkout
         .createFromAction(result.action, { challengeWindowSize: "02" })
-        .mount("#checkout-container");
+        .mount("#modal-container");
     } else {
       handlePaymentResult(result);
     }
