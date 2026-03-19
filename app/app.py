@@ -200,8 +200,10 @@ def create_app():
             print(f"\nDELETE storedPaymentMethods/{params['storedPaymentMethodId']} | SUCCESS")
 
             return Response(status=200)
-        except:
+        except Adyen.exceptions.AdyenError as e:
             print(f"\nDELETE storedPaymentMethods/{params['storedPaymentMethodId']} | FAILED")
+            logging.error(f"Adyen error while deleting stored payment method: {e.message}")
+            logging.error(e.debug())
 
             return Response(status=422)
 
@@ -251,6 +253,17 @@ def create_app():
     @app.route('/result/success', methods=['GET'])
     def checkout_success():
         result = request.args.get('paymentResult')
+
+        # TODO adding logic to send GET /sessions response
+        # Also need to fix handleOnPaymentCompleted to pass the sessionID
+        # if not result:
+        #     adyen = Adyen.Adyen()
+        #     adyen.payment.client.xapikey = get_adyen_api_key()
+        #     adyen.payment.client.platform = "test"
+
+        #     result = adyen.checkout.get_result_of_payment_session(sessionId="test")
+
+
         return render_template('checkout-success.html', response=result)
 
     @app.route('/result/failed', methods=['GET'])
