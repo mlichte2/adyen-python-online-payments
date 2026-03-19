@@ -16,7 +16,7 @@ from main.cardDetails import adyen_card_details
 from main.config import *
 
 
-WEB_VERSION = "6.27.0"
+WEB_VERSION = "6.32.0"
 
 
 def create_app():
