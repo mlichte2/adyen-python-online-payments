@@ -122,7 +122,33 @@ async function startCheckout() {
     };
 
     const cardConfig = {
-      billingAddressRequired: true,
+      // brands: [],
+      _disableClickToPay: true,
+      enableStoreDetails: false,
+      billingAddressRequired: false,
+      billingAddressMode: "partials",
+      hasHolderName: false,
+      brandsConfiguration: {},
+      clickToPayConfiguration: {
+        merchantDisplayName: "Chicago Tech Support",
+        shopperEmail: "test@adyen.com", // Used to recognize your shopper's Click to Pay account.
+      },
+      // onBinValue: (data) => {
+      //   console.log("OnBinValue\n");
+      //   console.log(data);
+      // },
+      // onFieldValid: (data) => {
+      //   if (data.fieldType != "encryptedCardNumber") {
+      //   } else {
+      //     console.log("onFieldValid\n");
+      //     console.log(data);
+      //   }
+      // },
+      // onBinLookup: (data) => {
+      //   console.log("onBinLookup\n");
+      //   console.log(data);
+      // },
+      // enableStoreDetails: true,
     };
 
     const checkout = await AdyenCheckout(configuration);
