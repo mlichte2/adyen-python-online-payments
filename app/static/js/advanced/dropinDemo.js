@@ -1,8 +1,10 @@
+// https://docs.adyen.com/online-payments/build-your-integration/advanced-flow?platform=Web&integration=Drop-in&version=6.31.1
+
 // TODO: Ensure your HTML contains an element with id="clientKey" containing your Adyen Client Key
-const clientKey = document.getElementById("clientKey").innerHTML;
+const clientKey = document.getElementById("").innerHTML;
 
 // TODO: Destructure AdyenCheckout and Dropin from the global AdyenWeb object
-const { AdyenCheckout, Dropin } = window.AdyenWeb;
+const { AdyenCheckout } = window.AdyenWeb;
 
 // TODO: Define the payment requirements (amount, currency, countryCode, etc.)
 // Example: const paymentMethodsData = { amount: { currency: "EUR", value: 1000 }, countryCode: "NL" };
