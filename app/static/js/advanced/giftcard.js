@@ -210,6 +210,68 @@ async function startCheckout() {
 
     checkout = await AdyenCheckout(configuration);
 
+    const giftcardConfiguration = {
+      brandsConfiguration: {
+        genericgiftcard: {
+          name: "Adyen Gift Card",
+          icon: "https://icons.getbootstrap.com/assets/icons/gift.svg",
+        },
+      },
+
+      onBalanceCheck: async (resolve, reject, data) => {
+        try {
+          const balanceResponse = await fetch("/api/paymentMethods/balance", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              ...data,
+              amount: paymentMethodsData.amount,
+            }),
+          }).then((r) => r.json());
+          console.log("Balance check response:", balanceResponse);
+          localStorage.setItem("balanceResponse", balanceResponse);
+          resolve(balanceResponse);
+        } catch (error) {
+          console.error("Balance check failed:", error);
+          reject(error);
+        }
+      },
+      onOrderRequest: async (resolve, reject, data) => {
+        try {
+          // 1 hour
+          const utcExpiresAt =
+            new Date(Date.now() + 60 * 60 * 1000).toISOString().split(".")[0] +
+            "Z";
+          const orderResponse = await fetch("/api/createOrder", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              amount: paymentsData.amount,
+              reference: paymentsData.reference,
+              expiresAt: utcExpiresAt,
+            }),
+          }).then((r) => r.json());
+          console.log("Order creation response:", orderResponse);
+          resolve(orderResponse);
+        } catch (error) {
+          console.error("Order creation failed:", error);
+          reject(error);
+        }
+      },
+      onOrderCancel: async (order) => {
+        try {
+          await fetch("/api/orders/cancel", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ order }),
+          });
+          console.log("Order cancelled");
+        } catch (error) {
+          console.error("Order cancellation failed:", error);
+        }
+      },
+    };
+
     const giftcardComponent = new Giftcard(checkout, giftcardConfiguration);
 
     giftcardComponent
