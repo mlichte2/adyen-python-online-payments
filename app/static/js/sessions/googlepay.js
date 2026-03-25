@@ -9,10 +9,10 @@ async function createAdyenCheckout(session) {
     environment: "test",
     amount: {
       value: 10000,
-      currency: 'EUR'
+      currency: "EUR",
     },
     locale: "en_US",
-    countryCode: 'NL',
+    countryCode: "NL",
     showPayButton: true,
     onPaymentCompleted: (result, component) => {
       console.info("onPaymentCompleted", result, component);
@@ -23,7 +23,13 @@ async function createAdyenCheckout(session) {
       handleOnPaymentFailed(result.resultCode);
     },
     onError: (error, component) => {
-      console.error("onError", error.name, error.message, error.stack, component);
+      console.error(
+        "onError",
+        error.name,
+        error.message,
+        error.stack,
+        component
+      );
       window.location.href = "/result/error";
     },
   });
@@ -61,20 +67,29 @@ function handleOnPaymentFailed(resultCode) {
 // Function to start checkout
 async function startCheckout() {
   try {
-    const session = await fetch('/api/sessions', {
-      method: 'POST',
+    const session = await fetch("/api/sessions", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
-      }
-    }).then(response => response.json());
+        "Content-Type": "application/json",
+      },
+    }).then((response) => response.json());
 
     const checkout = await createAdyenCheckout(session);
     const googlepay = new GooglePay(checkout, {
       emailRequired: true,
       billingAddressRequired: true,
       shippingAddressRequired: true,
-    }).mount('#component-container');
-
+      existingPaymentMethodRequired: true,
+    });
+    googlepay
+      .isAvailable()
+      .then(() => {
+        console.log("Google Pay is Available");
+        googlepay.mount("#component-container");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
   } catch (error) {
     console.error(error);
     alert("Error occurred. Look at console for details");
