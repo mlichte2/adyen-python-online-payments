@@ -1,19 +1,19 @@
 // https://docs.adyen.com/online-payments/build-your-integration/advanced-flow?platform=Web&integration=Drop-in&version=6.31.1
 
-// TODO: Ensure your HTML contains an element with id="clientKey" containing your Adyen Client Key
-const clientKey = document.getElementById("").innerHTML;
+// Ensure your HTML contains an element with id="clientKey" containing your Adyen Client Key
+const clientKey = document.getElementById("clientKey").innerHTML;
 
 // TODO: Destructure AdyenCheckout and Dropin from the global AdyenWeb object
 const { AdyenCheckout } = window.AdyenWeb;
 
 // TODO: Define the payment requirements (amount, currency, countryCode, etc.)
-// Example: const paymentMethodsData = { amount: { currency: "EUR", value: 1000 }, countryCode: "NL" };
-const paymentMethodsData = {
+// Example: const paymentMethodsDataDemo = { amount: { currency: "EUR", value: 1000 }, countryCode: "NL" };
+const paymentMethodsDataDemo = {
   /* Add your payment methods fetch data here */
 };
 
 // TODO: Define any additional core data needed for the /payments request (like reference or shopper info)
-const paymentsData = {
+const paymentsDataDemo = {
   /* Add your core payment request data here */
 };
 
@@ -25,24 +25,24 @@ async function startCheckout() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(paymentMethodsData),
+      body: JSON.stringify(paymentMethodsDataDemo),
     }).then((response) => response.json());
 
     const configuration = {
       paymentMethodsResponse: paymentMethodsResponse,
       clientKey,
-      amount: paymentMethodsData.amount, // TODO: Ensure paymentMethodsData.amount is defined
+      amount: paymentMethodsDataDemo.amount, // TODO: Ensure paymentMethodsDataDemo.amount is defined
       environment: "test", // TODO: Change to "live" when deploying to production
-      countryCode: paymentMethodsData.countryCode,
+      countryCode: paymentMethodsDataDemo.countryCode,
       showPayButton: true,
 
       onSubmit: async (state, component, actions) => {
         try {
           console.log("state:\n", state, "component:\n", component);
 
-          // TODO: Construct your requestData by spreading both paymentsData and the Drop-in state.data
+          // TODO: Construct your requestData by spreading both paymentsDataDemo and the Drop-in state.data
           const requestData = {
-            /* ...paymentsData, ...state.data */
+            /* ...paymentsDataDemo, ...state.data */
           };
 
           console.log("requestData:\n", requestData);
@@ -59,7 +59,7 @@ async function startCheckout() {
           console.log(paymentsResult);
 
           // TODO: If the /payments request from your server fails, call actions.reject()
-          // Hint: Check if paymentsResult.resultCode exists
+          // Hint: Check if paymentsResult.resultCode exists -- if (!paymentsResult.resultCode)
           if (/* Add failure condition here */ false) {
             actions.reject();
             return;
@@ -68,9 +68,8 @@ async function startCheckout() {
           // TODO: Destructure the expected fields (resultCode, action, order, donationToken)
           // from paymentsResult and pass them into actions.resolve()
 
-          /* const { resultCode, action, order, donationToken } = paymentsResult;
-          actions.resolve({ resultCode, action, order, donationToken }); 
-          */
+          // const { resultCode, action, order, donationToken } = paymentsResult;
+          // actions.resolve({ resultCode, action, order, donationToken });
         } catch (error) {
           console.error("onSubmit", error);
           actions.reject();
@@ -88,7 +87,7 @@ async function startCheckout() {
             body: JSON.stringify(state.data),
           }).then((response) => response.json());
 
-          // TODO: If the request from your server fails, call actions.reject()
+          // TODO: If the request from your server fails, call actions.reject() -- if (!paymentsDetailsResult.resultCode)
           if (/* Add failure condition here */ false) {
             actions.reject();
             return;
@@ -126,19 +125,17 @@ async function startCheckout() {
 
     // TODO: Configure specific payment methods if needed (e.g., hiding cardholder names, styling Apple Pay)
     const paymentMethodsConfiguration = {
-      /* card: { ... },
-      klarna: { ... }
-      */
+      card: {},
+      klarna: {},
     };
 
     // TODO: Initialize AdyenCheckout with the configuration, then create and mount the Dropin
     // Ensure your HTML contains a container like: <div id="dropin-container"></div>
     const adyenCheckout = await AdyenCheckout(configuration);
 
-    /* const dropin = new Dropin(adyenCheckout, {
-      paymentMethodsConfiguration: paymentMethodsConfiguration,
-    }).mount("#dropin-container"); 
-    */
+    // const dropin = new Dropin(adyenCheckout, {
+    //   paymentMethodsConfiguration: paymentMethodsConfiguration,
+    // }).mount("#dropin-container");
   } catch (error) {
     console.error(error);
     alert("Error occurred. Look at console for details.");
