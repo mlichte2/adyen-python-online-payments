@@ -22,7 +22,7 @@ const paymentMethodsData = {
 const paymentsData = {
   ...paymentMethodsData,
   reference: "TEST_123",
-  returnUrl: "http://" + window.location.host + "/handleShopperRedirect",
+  returnUrl: window.location.origin + "/handleShopperRedirect",
   shopperEmail: "test@adyen.com",
   shopperReference: shopperReference,
   shopperInteraction: "Ecommerce",

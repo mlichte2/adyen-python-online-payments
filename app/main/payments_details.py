@@ -1,5 +1,6 @@
 import Adyen
 import json
+import logging
 from Adyen.exceptions import AdyenError
 from main.config import get_adyen_api_key, get_adyen_merchant_account, get_adyen_checkout_api_verson
 from main.errors import handle_adyen_error
@@ -14,14 +15,14 @@ def adyen_payments_details(data):
 
     request = data
 
-    print("/paymentsDetails request:\n" + str(data))
+    logging.info("/paymentsDetails request:\n%s", json.dumps(data, indent=2))
 
     try:
         result = adyen.checkout.payments_api.payments_details(request)
     except AdyenError as error:
         return handle_adyen_error("/paymentsDetails", error)
 
-    formatted_response = json.dumps((json.loads(result.raw_response)))
-    print("/paymentsDetails response:\n" + formatted_response)
+    parsed = json.loads(result.raw_response)
+    logging.info("/paymentsDetails response:\n%s", json.dumps(parsed, indent=2))
 
-    return formatted_response
+    return json.dumps(parsed)

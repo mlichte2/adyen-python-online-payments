@@ -53,7 +53,7 @@ document.getElementById("pay-button").addEventListener("click", async () => {
     shopperIP: "192.0.2.1",
     channel: "web",
     origin: window.location.origin,
-    returnUrl: "http://" + window.location.host + "/handleShopperRedirect",
+    returnUrl: window.location.origin + "/handleShopperRedirect",
   };
 
   try {

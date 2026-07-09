@@ -132,7 +132,7 @@ async function startCheckout() {
       brandsConfiguration: {},
       clickToPayConfiguration: {
         merchantDisplayName: "Chicago Tech Support",
-        shopperEmail: "michael.lichtenberger@adyen.com", // Used to recognize your shopper's Click to Pay account.
+        shopperEmail: "test@adyen.com", // Used to recognize your shopper's Click to Pay account.
       },
       // onBinValue: (data) => {
       //   console.log("OnBinValue\n");

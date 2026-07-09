@@ -54,12 +54,4 @@ def get_adyen_checkout_api_verson():
     return adyen_checkout_api_verson
 
 
-def get_supported_integration():
-    return ['dropin', 'card', 'ideal', 'klarna', 'directEbanking', 'alipay', 'boletobancario',
-            'sepadirectdebit', 'dotpay', 'giropay', 'ach', 'paypal', 'applepay',
-            'klarna_paynow', 'klarna', 'klarna_account']
 
-
-    # Check to make sure variables are set
-    # if not merchant_account or not checkout_apikey or not client_key or not hmac_key:
-    #     raise Exception("Incomplete configuration in .env")

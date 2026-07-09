@@ -26,6 +26,12 @@ def create_app():
 
     app = Flask('app')
 
+    @app.template_filter('pretty_json')
+    def pretty_json_filter(value):
+        if value is None:
+            return ''
+        return json.dumps(value, indent=2, sort_keys=True)
+
     # Register 404 handler
     app.register_error_handler(404, page_not_found)
 
@@ -234,22 +240,22 @@ def create_app():
 
     @app.route('/result/success', methods=['GET'])
     def checkout_success():
-        result = request.args.get('paymentResult')
+        result = _parse_result(request.args.get('paymentResult'))
         return render_template('checkout-success.html', response=result)
 
     @app.route('/result/failed', methods=['GET'])
     def checkout_failure():
-        result = request.args.get('paymentResult')
+        result = _parse_result(request.args.get('paymentResult'))
         return render_template('checkout-failed.html', response=result)
 
     @app.route('/result/pending', methods=['GET'])
     def checkout_pending():
-        result = request.args.get('paymentResult')
+        result = _parse_result(request.args.get('paymentResult'))
         return render_template('checkout-success.html', response=result)
 
     @app.route('/result/error', methods=['GET'])
     def checkout_error():
-        result = request.args.get('paymentResult')
+        result = _parse_result(request.args.get('paymentResult'))
         return render_template('checkout-failed.html', response=result)
     
     # Handle redirect during payment. This gets called during the redirect flow
@@ -324,6 +330,19 @@ def create_app():
     return app
 
 
+def _parse_result(result):
+    """Normalize a payment result to a dict for template rendering.
+    Handles JSON strings (from URL query params set by JS) and dicts (from redirect flow)."""
+    if result is None:
+        return None
+    if isinstance(result, dict):
+        return result
+    try:
+        return json.loads(result)
+    except (json.JSONDecodeError, TypeError):
+        return {"raw": str(result)}
+
+
 #  process payload asynchronously
 def consume_event(notification):
     logging.info(f"consume_event merchantReference: {notification['NotificationRequestItem']['merchantReference']} "
@@ -340,4 +359,4 @@ if __name__ == '__main__':
     web_app = create_app()
 
     logging.info(f"Running on http://localhost:{get_port()}")
-    web_app.run(debug=True, port=get_port(), host='0.0.0.0')
+    web_app.run(debug=os.environ.get('FLASK_DEBUG', '0') == '1', port=get_port(), host='0.0.0.0')
