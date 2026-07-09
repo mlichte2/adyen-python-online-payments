@@ -1,7 +1,8 @@
 import Adyen
 import json
+from Adyen.exceptions import AdyenError
 from main.config import get_adyen_api_key, get_adyen_merchant_account, get_adyen_checkout_api_verson
-from dotenv import dotenv_values
+from main.errors import handle_adyen_error
 
 '''
 Create Payment Session by calling /sessions endpoint
@@ -25,10 +26,9 @@ def adyen_sessions(host_url):
     adyen.payment.client.api_checkout_version = get_adyen_checkout_api_verson()
 
     request = {
+        "allowedPaymentMethods": [],
         "blockedPaymentMethods": [],
         "merchantAccount": "ADYEN_MERCHANT_ACCOUNT",
-        "shopperInteraction": "ContAuth",
-        "recurringProcessingModel": "CardOnFile",
         "reference": "YOUR_ORDER_REFERENCE",
         "amount": {
             "currency": "USD",
@@ -44,22 +44,6 @@ def adyen_sessions(host_url):
             "lastName": "Approved"
         },
         "shopperReference": "YOUR_SHOPPER_REFERENCE",
-        "billingAddress": {
-            "city": "Ankeborg",
-            "country": "US",
-            "houseNumberOrName": "1",
-            "postalCode": "12345",
-            "street": "Stargatan",
-            "stateOrProvince": "MN"
-        },
-        "deliveryAddress": {
-            "city": "Ankeborg",
-            "country": "US",
-            "houseNumberOrName": "1",
-            "postalCode": "12345",
-            "street": "Stargatan",
-            "stateOrProvince": "MN"
-        },
         "dateOfBirth": "1996-09-04",
         "socialSecurityNumber": "0108",
         "returnUrl": f"{host_url}handleShopperRedirect?shopperOrder=myRef",
@@ -86,9 +70,10 @@ def adyen_sessions(host_url):
 
     request['merchantAccount'] = get_adyen_merchant_account()
 
-    result = adyen.checkout.payments_api.sessions(request)
+    try:
+        result = adyen.checkout.payments_api.sessions(request)
+    except AdyenError as error:
+        return handle_adyen_error("/sessions", error)
 
     formatted_response = json.dumps((json.loads(result.raw_response)))
-    print("/sessions response:\n" + formatted_response)
-
     return formatted_response

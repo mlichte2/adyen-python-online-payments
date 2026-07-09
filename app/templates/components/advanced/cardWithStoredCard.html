@@ -26,12 +26,14 @@
   <div class="container">
     <div class="payment-container">
       <div id="stored-cards-container"></div>
+      <div id="new-card-radio-container"></div>
       <div id="component-container" class="payment">
         <!-- Component will be rendered here -->
       </div>
+      <button id="pay-button" class="button">Pay</button>
     </div>
   </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/advanced/card.js') }}"></script>
+<script src="{{ url_for('static', filename='js/advanced/cardWithStoredCard.js') }}"></script>
 {% endblock %}

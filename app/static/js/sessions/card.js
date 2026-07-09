@@ -8,10 +8,6 @@ async function createAdyenCheckout(session) {
     clientKey,
     environment: "test",
     locale: "en_US",
-    beforeSubmit: (data, component, actions) => {
-      console.dir(data);
-      actions.resolve(data);
-    },
     onPaymentCompleted: (result, component) => {
       console.info("onPaymentCompleted", result, component);
       handleOnPaymentCompleted(result.resultCode);
@@ -74,19 +70,8 @@ async function startCheckout() {
 
     const checkout = await createAdyenCheckout(session);
     const card = new Card(checkout, {
-      // // Optional configuration.
-      billingAddressRequired: true, // when true show the billing address input fields and mark them as required.
-      // showBrandIcon: true, // when false not showing the brand logo
-      // hasHolderName: true, // show holder name
-      // holderNameRequired: true, // make holder name mandatory
-      // // configure placeholders
-      // placeholders: {
-      //   cardNumber: '1234 5678 9012 3456',
-      //   expiryDate: 'MM/YY',
-      //   securityCodeThreeDigits: '123',
-      //   securityCodeFourDigits: '1234',
-      //   holderName: 'J. Smith'
-      // }
+      billingAddressRequired: true,
+      billingAddressMode: "partial",
     }).mount("#component-container");
   } catch (error) {
     console.error(error);

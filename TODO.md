@@ -6,20 +6,23 @@ priority. Each item notes *what*, *why it matters for support*, and *where*.
 
 ---
 
-## P0 - Correctness bugs (the tool itself must be trustworthy)
+## P0 - Correctness bugs (the tool itself must be trustworthy) - DONE
 
-- [ ] **Fix `shipping_methods()` KeyError + undefined `flow`.**
+- [x] **Fix `shipping_methods()` KeyError + undefined `flow`.**
   `if request.json['amount']:` raises `KeyError` when the sessions flow sends `sessionAmount`
   instead of `amount`, and `flow` is only assigned inside that `if`, so it is undefined otherwise.
   Use `.get()` and set `flow` in both branches.
   *File:* `app/app.py` (`shipping_methods`).
 
-- [ ] **Fix string identity comparison bug.**
+- [x] **Fix string identity comparison bug.**
   `if country_code.lower() is not "US".lower():` uses object identity (`is not`) instead of value
   comparison (`!=`). This works by luck today and will silently break shipping-method filtering.
   *File:* `app/app.py` (`shipping_methods`).
 
-- [ ] **Wrap all Adyen API calls in error handling and surface the Adyen error body.**
+- [x] **Wrap all Adyen API calls in error handling and surface the Adyen error body.**
+  Implemented via `app/main/errors.py` (`handle_adyen_error`), wired into
+  `sessions.py`/`payments.py`/`payment_methods.py`/`payments_details.py` and the inline
+  `/orders`, `/paymentMethods/balance`, `/orders/cancel` routes.
   `sessions.py`, `payments.py`, `payment_methods.py`, `payments_details.py`, and the inline
   `orders`/`balance`/`cancel` routes call Adyen with no try/except. On any API error the agent gets
   a Flask 500 stack trace instead of Adyen's `status`/`errorCode`/`message`/`pspReference`, which is
@@ -27,12 +30,14 @@ priority. Each item notes *what*, *why it matters for support*, and *where*.
   error payload as JSON with the proper status code.
   *Files:* `app/main/*.py`, `app/app.py`.
 
-- [ ] **Remove the duplicate, case-colliding template.**
+- [x] **Remove the duplicate, case-colliding template.**
+  Removed the incomplete orphan `cardwithStoredCard.html`; kept the referenced `cardWithStoredCard.html`.
   Both `cardWithStoredCard.html` and `cardwithStoredCard.html` exist. On case-insensitive
   filesystems (macOS default) this is ambiguous and error-prone. Keep one.
   *Files:* `app/templates/components/advanced/cardWithStoredCard.html`, `.../cardwithStoredCard.html`.
 
-- [ ] **Resolve or remove the dead `checkout_success` GET /sessions logic.**
+- [x] **Resolve or remove the dead `checkout_success` GET /sessions logic.**
+  Removed the misleading commented-out block.
   The commented-out `# TODO adding logic to send GET /sessions response` block should either be
   implemented (fetch session result by `sessionId`) or deleted so agents aren't misled.
   *File:* `app/app.py` (`checkout_success`).

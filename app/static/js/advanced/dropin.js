@@ -131,6 +131,8 @@ async function startCheckout() {
           securityCodeFourDigits: "1234",
           holderName: "J. Smith",
         },
+        billingAddressRequired: true,
+        billingAddressMode: "partial",
       },
       klarna: {
         name: "Pay Later with Klarna",
@@ -138,12 +140,23 @@ async function startCheckout() {
       klarna_account: {
         name: "Pay over time with Klarna",
       },
+      giftcard: {
+        brandsConfiguration: {
+          genericgiftcard: {
+            name: "Adyen Gift Card",
+            icon: "https://icons.getbootstrap.com/assets/icons/gift.svg",
+          },
+        },
+      },
     };
 
     // Start the AdyenCheckout and mount the element onto the 'payment' div.
     const adyenCheckout = await AdyenCheckout(configuration);
     const dropin = new Dropin(adyenCheckout, {
       paymentMethodsConfiguration: paymentMethodsConfiguration,
+      openPaymentMethod: {
+        type: "scheme",
+      },
     }).mount("#dropin-container");
   } catch (error) {
     console.error(error);

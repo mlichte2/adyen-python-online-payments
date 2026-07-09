@@ -9,7 +9,7 @@ async function startCheckout() {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(paymentMethodsData)
+      body: JSON.stringify(paymentMethodsData),
     }).then((response) => response.json());
 
     const configuration = {
@@ -24,48 +24,42 @@ async function startCheckout() {
           // Make a POST /payments request from your server.
           // const result = await makePaymentsCall(state.data, countryCode, locale, amount);]
 
-          console.log("state:\n", state, "component:\n", component)
+          console.log("state:\n", state, "component:\n", component);
 
           requestData = {
             ...paymentsData,
-            ...state.data, 
-          }
+            ...state.data,
+          };
 
-          console.log("requestData:\n", requestData)
+          console.log("requestData:\n", requestData);
 
           const paymentsResult = await fetch("/api/payments", {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(requestData)
+            body: JSON.stringify(requestData),
           }).then((response) => response.json());
 
-          console.log(paymentsResult)
+          console.log(paymentsResult);
 
           // If the /payments request from your server fails, or if an unexpected error occurs.
           if (!paymentsResult.resultCode) {
             actions.reject();
             return;
           }
-     
-          const {
-            resultCode,
-            action,
-            order,
-            donationToken
-          } = paymentsResult;
-     
+
+          const { resultCode, action, order, donationToken } = paymentsResult;
+
           // If the /payments request request form your server is successful, you must call this to resolve whichever of the listed objects are available.
           // You must call this, even if the result of the payment is unsuccessful.
-          console.log("handling /payments action:\n", action)
+          console.log("handling /payments action:\n", action);
           actions.resolve({
             resultCode,
             action,
             order,
             donationToken,
           });
-        
         } catch (error) {
           console.error("onSubmit", error);
           actions.reject();
@@ -79,25 +73,21 @@ async function startCheckout() {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(state.data)
+            body: JSON.stringify(state.data),
           }).then((response) => response.json());
-     
+
           // If the /payments/details request from your server fails, or if an unexpected error occurs.
           if (!paymentsDetailsResult.resultCode) {
             actions.reject();
             return;
           }
-     
-          const {
-            resultCode,
-            action,
-            order,
-            donationToken
-          } = paymentsDetailsResult;
-     
+
+          const { resultCode, action, order, donationToken } =
+            paymentsDetailsResult;
+
           // If the /payments/details request request from your server is successful, you must call this to resolve whichever of the listed objects are available.
           // You must call this, even if the result of the payment is unsuccessful.
-          console.log("handling /payments/details action:\n", action)
+          console.log("handling /payments/details action:\n", action);
           actions.resolve({
             resultCode,
             action,
@@ -118,34 +108,37 @@ async function startCheckout() {
         handleOnPaymentFailed(result, component);
       },
       onError: (error, component) => {
-        console.error("onError", error.name, error.message, error.stack, component);
+        console.error(
+          "onError",
+          error.name,
+          error.message,
+          error.stack,
+          component
+        );
         window.location.href = "/result/error";
-      }
+      },
     };
 
-    const klarnaConfig = {
-
-    };
+    const klarnaConfig = {};
 
     const checkout = await AdyenCheckout(configuration);
 
     const klarnaPaymentMethods = paymentMethodsResponse.paymentMethods.filter(
-        (element) => 
-          element.type == 'klarna' || 
-          element.type == 'klarna_account' || 
-          element.type == 'klarna_paynow'
-      )
-  
-      for (let i = 0; i < klarnaPaymentMethods.length; i++) {
-        const element = klarnaPaymentMethods[i];
-        console.log(element)
-        const klarna = new Klarna(checkout, {
-          type: element.type, // Types: 'klarna_paynow' (pay now), 'klarna' (pay later), 'klarna_account' (pay over time)
-          name: element.name,
-          useKlarnaWidget: false,
-        }).mount('#component-container-' + i);
-        
-      } 
+      (element) =>
+        element.type == "klarna" ||
+        element.type == "klarna_account" ||
+        element.type == "klarna_paynow"
+    );
+
+    for (let i = 0; i < klarnaPaymentMethods.length; i++) {
+      const element = klarnaPaymentMethods[i];
+      console.log(element);
+      const klarna = new Klarna(checkout, {
+        type: element.type, // Types: 'klarna_paynow' (pay now), 'klarna' (pay later), 'klarna_account' (pay over time)
+        name: element.name,
+        useKlarnaWidget: true,
+      }).mount("#component-container-" + i);
+    }
   } catch (error) {
     console.error(error);
     alert("Error occurred. Look at console for details.");

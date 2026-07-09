@@ -6,6 +6,7 @@
   content="width=device-width, initial-scale=1, shrink-to-fit=no"
 />
 <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<meta name="csp-nonce" content="{{ csp_nonce }}" />
 
 <!-- Web Version can be changed in app/app.py variable WEB_VERSION = "x.x.x"-->
 
@@ -25,7 +26,6 @@
 <div id="payment-page">
   <div class="container">
     <div class="payment-container">
-      <div id="stored-cards-container"></div>
       <div id="component-container" class="payment">
         <!-- Component will be rendered here -->
       </div>
@@ -33,5 +33,5 @@
   </div>
 </div>
 
-<script src="{{ url_for('static', filename='js/advanced/card.js') }}"></script>
+<script src="{{ url_for('static', filename='js/advanced/paypal.js') }}"></script>
 {% endblock %}

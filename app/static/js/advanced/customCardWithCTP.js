@@ -1,5 +1,5 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
-const { AdyenCheckout, CustomCard } = window.AdyenWeb;
+const { AdyenCheckout, CustomCard, ClickToPay } = window.AdyenWeb;
 
 // State management for the Custom Card component
 let state = {
@@ -67,27 +67,110 @@ const makePayment = async (data) => {
 
 async function startCheckout() {
   try {
+    const paymentMethodsResponse = await fetch("/api/paymentMethods", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(paymentMethodsData),
+    }).then((response) => response.json());
+
+    console.log(paymentMethodsResponse);
+
     const checkout = await AdyenCheckout({
+      paymentMethodsResponse: paymentMethodsResponse,
       clientKey,
       environment: "test",
       locale: "en_US",
       countryCode: paymentMethodsData.countryCode,
       amount: paymentsData.amount,
-      // This handler is called when a 3D Secure challenge has been completed
-      onAdditionalDetails: (state, component) => {
-        fetch("/api/paymentsDetails", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(state.data),
-        })
-          .then((response) => response.json())
-          .then((res) => handleServerResponse(res, component))
-          .catch((error) => {
-            console.error(error);
-            window.location.href = "/result/error";
+      onSubmit: async (state, component, actions) => {
+        try {
+          console.log("state:\n", state, "component:\n", component);
+
+          let requestData = {
+            ...paymentsData,
+            ...state.data,
+          };
+
+          console.log("requestData:\n", requestData);
+
+          const paymentsResult = await fetch("/api/payments", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(requestData),
+          }).then((response) => response.json());
+
+          console.log(paymentsResult);
+
+          if (!paymentsResult.resultCode) {
+            actions.reject();
+            return;
+          }
+
+          const { resultCode, action, order, donationToken } = paymentsResult;
+
+          console.log("handling /payments action:\n", action);
+          actions.resolve({
+            resultCode,
+            action,
+            order,
+            donationToken,
           });
+        } catch (error) {
+          console.error("onSubmit", error);
+          actions.reject();
+        }
+      },
+      onAdditionalDetails: async (state, component, actions) => {
+        try {
+          const paymentsDetailsResult = await fetch("/api/paymentsDetails", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(state.data),
+          }).then((response) => response.json());
+
+          if (!paymentsDetailsResult.resultCode) {
+            actions.reject();
+            return;
+          }
+
+          const { resultCode, action, order, donationToken } =
+            paymentsDetailsResult;
+
+          console.log("handling /payments/details action:\n", action);
+          actions.resolve({
+            resultCode,
+            action,
+            order,
+            donationToken,
+          });
+        } catch (error) {
+          console.error("onAdditionalDetails", error);
+          actions.reject();
+        }
+      },
+      onPaymentCompleted: (result, component) => {
+        console.info("onPaymentCompleted", result, component);
+        handleRedirect(result);
+      },
+      onPaymentFailed: (result, component) => {
+        console.info("onPaymentFailed", result, component);
+        handleRedirect(result);
+      },
+      onError: (error, component) => {
+        console.error(
+          "onError",
+          error.name,
+          error.message,
+          error.stack,
+          component
+        );
+        window.location.href = "/result/error";
       },
     });
 
@@ -140,17 +223,28 @@ async function startCheckout() {
       },
     }).mount("#customCard-container");
 
+    const clickToPay = new ClickToPay(checkout, {
+      shopperEmail: "test@adyen.com", // Used to recognize your shopper's Click to Pay account.
+      onReady() {
+        console.log("Component is ready to interact with the shopper");
+      },
+    });
+    // Display the Component if the shopper is identified.
+    clickToPay
+      .isAvailable()
+      .then(() => {
+        clickToPay.mount("#clicktopay-container");
+      })
+      .catch((e) => {
+        console.log(e);
+      });
+
     // Create and mount the Pay button
     const payButton = document.createElement("button");
     payButton.innerText = "Pay";
     payButton.classList.add("button"); // Use existing CSS class for styling
     payButton.onclick = async () => {
-      console.log(state);
-      if (
-        state.valid.encryptedCardNumber &&
-        state.valid.encryptedExpiryMonth &&
-        state.valid.encryptedExpiryYear
-      ) {
+      if (state.isValid) {
         payButton.disabled = true;
         payButton.innerText = "Processing...";
         const res = await makePayment(state.data);

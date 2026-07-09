@@ -1,32 +1,25 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
-// const { AdyenCheckout } = window.AdyenWeb;
 
 // Function to create AdyenCheckout instance
 async function createAdyenCheckout(session) {
-  return AdyenCheckout(
-    {
-      session: session,
-      clientKey,
-      environment: "test",
-      locale: "en_US",
-      onPaymentCompleted: (result, component) => {
-        console.info("onPaymentCompleted", result, component);
-        handleOnPaymentCompleted(result.resultCode);
-      },
-      onPaymentFailed: (result, component) => {
-        console.info("onPaymentFailed", result, component);
+  return AdyenCheckout({
+    session: session,
+    clientKey,
+    environment: "test",
+    locale: "en_US",
+    onPaymentCompleted: (result, component) => {
+      console.info("onPaymentCompleted", result, component);
+      handleOnPaymentCompleted(result.resultCode);
+    },
+    onPaymentFailed: (result, component) => {
+      console.info("onPaymentFailed", result, component);
       handleOnPaymentFailed(result.resultCode);
-      },
-      onError: (error, component) => {
-        console.error("onError", error.name, error.message, error.stack, component);
-        window.location.href = "/result/error";
-      },
-      // onSubmit: (state, component) => {
-      //   console.log("state: \n", state,"component: \n", component)
-      //   f
-      // }
-    }
-  );
+    },
+    onError: (error, component) => {
+      console.error("onError", error.name, error.message, error.stack, component);
+      window.location.href = "/result/error";
+    },
+  });
 }
 
 // Function to handle payment completion redirects
@@ -71,7 +64,6 @@ async function startCheckout() {
 
     const checkout = await createAdyenCheckout(session);
     const paypalConfig = {
-      // "userAction": "continue"
       "enableMessages": true,
       "blockPayPalPayLaterButton": true
     }

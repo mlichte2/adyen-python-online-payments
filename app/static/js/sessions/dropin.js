@@ -18,13 +18,8 @@ async function startCheckout() {
       locale: "en_US",
       countryCode: "US",
       showPayButton: true,
-      translations: {},
-      onAdditionalDetails: (state, component, actions) => {
-        console.log("state: " + state + "\n");
-      },
       onPaymentCompleted: (result, component) => {
         console.info("onPaymentCompleted", result, component);
-        console.log(result.sessionResult);
         handleOnPaymentCompleted(result, component);
       },
       onPaymentFailed: (result, component) => {

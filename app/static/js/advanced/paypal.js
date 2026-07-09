@@ -43,8 +43,6 @@ async function startCheckout() {
 
           console.log(paymentsResult);
 
-          localStorage.setItem("pspReference", paymentsResult.pspReference);
-
           // If the /payments request from your server fails, or if an unexpected error occurs.
           if (!paymentsResult.resultCode) {
             actions.reject();
@@ -123,80 +121,17 @@ async function startCheckout() {
 
     const checkout = await AdyenCheckout(configuration);
 
+    const cspNonce = document.querySelector("meta[name='csp-nonce']")?.content;
+
     const paypalConfig = {
+      enableVenmoSandbox: true,
       isExpress: true,
       // userAction: "continue",
-      // intent: "capture",
+      //   intent: "authorize",
       blockPayPalCreditButton: true,
       blockPayPalPayLaterButton: true,
-      blockPayPalVenmoButton: true,
-      onShippingAddressChange: async function (data, actions, component) {
-        // Get the current paymentData value stored within the Component.
-        const currentPaymentData = {
-          pspReference: localStorage.getItem("pspReference"),
-          paymentData: component.paymentData,
-          data: data,
-          amount: requestData.amount,
-        };
-
-        console.log(currentPaymentData);
-
-        // Implement the code to call your backend endpoint to update the final amount based on the selected delivery method, passing the paymentData.
-
-        const response = await fetch("/api/shippingMethods", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(currentPaymentData),
-        });
-
-        const paymentData = await response.json();
-
-        // Update the Component paymentData value with the new one.
-        component.updatePaymentData(paymentData.paymentData);
-
-        console.log("onShippingAddressChange: success");
-      },
-      onShippingOptionsChange: async function (data, actions, component) {
-        console.log(data, component);
-
-        // Get the current paymentData value stored within the Component.
-        const currentPaymentData = {
-          pspReference: localStorage.getItem("pspReference"),
-          paymentData: component.paymentData,
-          data: data,
-          amount: requestData.amount,
-        };
-
-        // Implement the code to call your backend endpoint to update the final amount based on the selected delivery method, passing the paymentData.
-        const response = await fetch("/api/shippingMethods", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(currentPaymentData),
-        });
-
-        const paymentData = await response.json();
-
-        // Update the Component paymentData value with the new one.
-        component.updatePaymentData(paymentData.paymentData);
-        console.log("onShippingOptionsChange: success");
-      },
-      onAuthorized: async function (data, actions) {
-        finalData = await data;
-        // logic to reject shipping to PO boxes since street address info is not available in onShippingAddressChange nor onShippingOptionsChange
-        if (finalData.deliveryAddress.street.toUpperCase().includes("P.O.")) {
-          console.log("onAuthorized failed: \n");
-          console.log(JSON.stringify(finalData));
-          actions.reject();
-        } else {
-          console.log("onAuthorized success: \n");
-          console.log(JSON.stringify(finalData));
-          actions.resolve();
-        }
-      },
+      blockPayPalVenmoButton: false,
+      ...(cspNonce && { cspNonce }),
     };
     const paypal = new PayPal(checkout, paypalConfig).mount(
       "#component-container"

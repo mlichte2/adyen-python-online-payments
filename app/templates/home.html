@@ -88,6 +88,13 @@
                     </div>
                 </a>
             </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="sessions", integration="dropinv5") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Drop-in v5</p>
+                    </div>
+                </a>
+            </li>
         </ul>
         <h1 id="integration-flows">Advanced flow integrations</h1>
         <ul class="integration-list">
@@ -109,6 +116,13 @@
                 <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="klarna") }}">
                     <div class="title-container">
                         <p class="integration-list-item-title">Klarna</p>
+                    </div>
+                </a>
+            </li>
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="paypal") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">PayPal</p>
                     </div>
                 </a>
             </li>
@@ -195,8 +209,21 @@
                         <p class="integration-list-item-title">Raw Card + 3DS</p>
                     </div>
                 </a>
+            </li>            
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="customCardWithCTP") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Custom Card + CTP</p>
+                    </div>
+                </a>
             </li>
-            
+            <li class="integration-list-item">
+                <a class="integration-list-item-link" href="{{ url_for('cart', flow="advanced", integration="cardWithStoredCard") }}">
+                    <div class="title-container">
+                        <p class="integration-list-item-title">Card with Stored Card</p>
+                    </div>
+                </a>
+            </li>
         </ul>
     </div>
 {% endblock %}

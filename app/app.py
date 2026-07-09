@@ -1,4 +1,5 @@
 import logging
+import os
 
 import Adyen
 from Adyen.util import is_valid_hmac_notification
@@ -12,11 +13,11 @@ from main.sessions import adyen_sessions
 from main.payment_methods import adyen_payment_methods
 from main.payments import adyen_payments
 from main.payments_details import adyen_payments_details
-from main.cardDetails import adyen_card_details
+from main.errors import handle_adyen_error
 from main.config import *
 
 
-WEB_VERSION = "6.32.0"
+WEB_VERSION = "6.36.0"
 
 
 def create_app():
@@ -51,46 +52,26 @@ def create_app():
 
     @app.route('/api/paymentMethods', methods=['POST'])
     def payment_methods():
-        
         data = request.json
-        print(data)
         return adyen_payment_methods(data)
 
     @app.route('/api/payments', methods=['POST'])
     def payments():
-        
         data = request.json
-        print(data)
-        # adding srcScheme to prevent breaking CTP
-        if data["paymentMethod"]["type"] == "scheme" and not data["paymentMethod"].get("srcScheme") and not data["paymentMethod"].get("storedPaymentMethodId") and not data["paymentMethod"].get("number"):
-            encrypted_card_data = {"encryptedCardNumber": data["paymentMethod"]["encryptedCardNumber"]}
-            response = adyen_card_details(encrypted_card_data)
-            # example {"brands": [{"supported": true, "type": "mc"}], "fundingSource": "PREPAID", "issuingCountryCode": "BR"}
-            print(response)
-            
-            # add logic to return error to an error to customer if card fundingSource is unsupported or continue with processing payments
- 
         return adyen_payments(data)
 
     @app.route('/api/paymentsDetails', methods=['POST'])
     def payments_details():
-        
         data = request.json
-        print(data)
         return adyen_payments_details(data)
 
 
     @app.route('/api/shippingMethods', methods=['POST'])
-    def shipping_methods():    
-
-        print(request.json)
-
-        if request.json['amount']:
-            flow = 'advanced'
+    def shipping_methods():
+        # Advanced flow sends "amount"; sessions flow sends "sessionAmount".
+        flow = 'advanced' if request.json.get('amount') else 'sessions'
 
         amount = request.json.get('sessionAmount', request.json.get('amount'))
-
-        print(amount)
 
         available_shipping_methods = [
             {
@@ -132,7 +113,7 @@ def create_app():
             country_code = request.json['data']['shippingAddress']['countryCode']
 
             # add logic to remove shipping methods if its a certain country or state
-            if country_code.lower() is not "US".lower():
+            if country_code.upper() != "US":
                 available_shipping_methods.pop(2)
 
         else:
@@ -167,16 +148,11 @@ def create_app():
                 "deliveryMethods": available_shipping_methods
             }
 
-        
-        print("update/paypalOrder request:\n", update_request)
 
         apiKey = get_adyen_api_key()
         result = requests.post(url='https://checkout-test.adyen.com/v71/paypal/updateOrder',json=update_request, headers={'X-API-KEY': apiKey})
-        
-        print(result)
-        formatted_response = result.json()
-        print("update/paypalOrder response:\n", formatted_response)
 
+        formatted_response = result.json()
         return formatted_response
 
     @app.route('/api/removePaymentMethod', methods=['POST'])
@@ -195,13 +171,10 @@ def create_app():
 
         try:
             http_response = adyen.checkout.recurring_api.delete_token_for_stored_payment_details(query_parameters=query_parameters, storedPaymentMethodId=params["storedPaymentMethodId"])
-            print(http_response)
-
-            print(f"\nDELETE storedPaymentMethods/{params['storedPaymentMethodId']} | SUCCESS")
-
+            logging.info(f"DELETE storedPaymentMethods/{params['storedPaymentMethodId']} | SUCCESS")
             return Response(status=200)
         except Adyen.exceptions.AdyenError as e:
-            print(f"\nDELETE storedPaymentMethods/{params['storedPaymentMethodId']} | FAILED")
+            logging.error(f"DELETE storedPaymentMethods/{params['storedPaymentMethodId']} | FAILED")
             logging.error(f"Adyen error while deleting stored payment method: {e.message}")
             logging.error(e.debug())
 
@@ -217,7 +190,10 @@ def create_app():
         
         params["merchantAccount"] = get_adyen_merchant_account()
 
-        result = adyen.checkout.orders_api.orders(request=params)
+        try:
+            result = adyen.checkout.orders_api.orders(request=params)
+        except Adyen.exceptions.AdyenError as error:
+            return handle_adyen_error("/orders", error)
 
         return result.message
 
@@ -231,7 +207,10 @@ def create_app():
         
         params["merchantAccount"] = get_adyen_merchant_account()
 
-        result = adyen.checkout.orders_api.get_balance_of_gift_card(request=params)
+        try:
+            result = adyen.checkout.orders_api.get_balance_of_gift_card(request=params)
+        except Adyen.exceptions.AdyenError as error:
+            return handle_adyen_error("/paymentMethods/balance", error)
 
         return result.message
 
@@ -245,7 +224,10 @@ def create_app():
         
         params["merchantAccount"] = get_adyen_merchant_account()
 
-        result = adyen.checkout.orders_api.cancel_order(request=params)
+        try:
+            result = adyen.checkout.orders_api.cancel_order(request=params)
+        except Adyen.exceptions.AdyenError as error:
+            return handle_adyen_error("/orders/cancel", error)
 
         return result.message
         
@@ -253,17 +235,6 @@ def create_app():
     @app.route('/result/success', methods=['GET'])
     def checkout_success():
         result = request.args.get('paymentResult')
-
-        # TODO adding logic to send GET /sessions response
-        # Also need to fix handleOnPaymentCompleted to pass the sessionID
-        # if not result:
-        #     adyen = Adyen.Adyen()
-        #     adyen.payment.client.xapikey = get_adyen_api_key()
-        #     adyen.payment.client.platform = "test"
-
-        #     result = adyen.checkout.get_result_of_payment_session(sessionId="test")
-
-
         return render_template('checkout-success.html', response=result)
 
     @app.route('/result/failed', methods=['GET'])
@@ -284,10 +255,6 @@ def create_app():
     # Handle redirect during payment. This gets called during the redirect flow
     @app.route('/handleShopperRedirect', methods=['GET', 'POST'])
     def handle_shopper_redirect():
-        print("/handleShopperRedirect")
-
-        print(request.method)
-
         adyen = Adyen.Adyen()
         adyen.payment.client.xapikey = get_adyen_api_key()
         adyen.payment.client.platform = "test"  # change to live for production
@@ -296,9 +263,6 @@ def create_app():
         # Payload for payment/details call
         redirect_data = request.args if request.method == 'GET' else request.form
 
-        print(request.method)
-        print(redirect_data)
-        
         details = {}
 
         if 'redirectResult' in redirect_data:
@@ -311,8 +275,12 @@ def create_app():
         try:
             http_response = adyen_payments_details({ "details": details })
 
+            # adyen_payments_details returns a (body, status_code) tuple on an Adyen API error
+            if isinstance(http_response, tuple):
+                logging.error(f"/paymentsDetails redirect failed: {http_response[0]}")
+                return render_template('checkout-failed.html')
+
             response = json.loads(http_response)
-            print("/paymentDetails response:\n" + str(response))
 
             # Display resultCode to shopper
             if response['resultCode'] == "Authorised":
@@ -358,8 +326,8 @@ def create_app():
 
 #  process payload asynchronously
 def consume_event(notification):
-    print(f"consume_event merchantReference: {notification['NotificationRequestItem']['merchantReference']} "
-          f"result? {notification['NotificationRequestItem']['success']}")
+    logging.info(f"consume_event merchantReference: {notification['NotificationRequestItem']['merchantReference']} "
+                 f"result? {notification['NotificationRequestItem']['success']}")
 
     # add item to DB, queue or run in a different thread
 

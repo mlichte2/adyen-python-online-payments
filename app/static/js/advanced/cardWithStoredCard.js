@@ -1,5 +1,5 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
-const { AdyenCheckout, PayPal } = window.AdyenWeb;
+const { AdyenCheckout, Card } = window.AdyenWeb;
 
 async function startCheckout() {
   try {
@@ -18,7 +18,9 @@ async function startCheckout() {
       amount: paymentMethodsData.amount,
       environment: "test",
       countryCode: paymentMethodsData.countryCode,
-      showPayButton: true,
+      onChange: (state, component) => {
+        console.info("onChange", state, component);
+      },
       onSubmit: async (state, component, actions) => {
         try {
           // Make a POST /payments request from your server.
@@ -42,8 +44,6 @@ async function startCheckout() {
           }).then((response) => response.json());
 
           console.log(paymentsResult);
-
-          localStorage.setItem("pspReference", paymentsResult.pspReference);
 
           // If the /payments request from your server fails, or if an unexpected error occurs.
           if (!paymentsResult.resultCode) {
@@ -121,86 +121,123 @@ async function startCheckout() {
       },
     };
 
+    const cardConfig = {
+      showPayButton: false,
+      // brands: [],
+      _disableClickToPay: false,
+      enableStoreDetails: false,
+      billingAddressRequired: true,
+      billingAddressMode: "partial",
+      hasHolderName: false,
+      brandsConfiguration: {},
+      clickToPayConfiguration: {
+        merchantDisplayName: "Chicago Tech Support",
+        shopperEmail: "michael.lichtenberger@adyen.com", // Used to recognize your shopper's Click to Pay account.
+      },
+      // onBinValue: (data) => {
+      //   console.log("OnBinValue\n");
+      //   console.log(data);
+      // },
+      // onFieldValid: (data) => {
+      //   if (data.fieldType != "encryptedCardNumber") {
+      //   } else {
+      //     console.log("onFieldValid\n");
+      //     console.log(data);
+      //   }
+      // },
+      // onBinLookup: (data) => {
+      //   console.log("onBinLookup\n");
+      //   console.log(data);
+      // },
+      // enableStoreDetails: true,
+    };
+
     const checkout = await AdyenCheckout(configuration);
 
-    const paypalConfig = {
-      isExpress: true,
-      // userAction: "continue",
-      // intent: "capture",
-      blockPayPalCreditButton: true,
-      blockPayPalPayLaterButton: true,
-      blockPayPalVenmoButton: true,
-      onShippingAddressChange: async function (data, actions, component) {
-        // Get the current paymentData value stored within the Component.
-        const currentPaymentData = {
-          pspReference: localStorage.getItem("pspReference"),
-          paymentData: component.paymentData,
-          data: data,
-          amount: requestData.amount,
-        };
+    let activeComponent = null;
 
-        console.log(currentPaymentData);
+    // Mount stored card components
+    const storedPaymentMethods =
+      paymentMethodsResponse.storedPaymentMethods || [];
+    const storedCardsContainer = document.getElementById(
+      "stored-cards-container"
+    );
 
-        // Implement the code to call your backend endpoint to update the final amount based on the selected delivery method, passing the paymentData.
+    const filteredStoredCards = storedPaymentMethods.filter(
+      (pm) =>
+        pm.type === "scheme" &&
+        pm.supportedRecurringProcessingModels.includes("CardOnFile")
+    );
 
-        const response = await fetch("/api/shippingMethods", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(currentPaymentData),
-        });
+    for (const storedCard of filteredStoredCards) {
+      const wrapper = document.createElement("div");
+      wrapper.classList.add("payment-option");
 
-        const paymentData = await response.json();
+      const radioInput = document.createElement("input");
+      radioInput.type = "radio";
+      radioInput.name = "payment-method";
+      radioInput.id = `radio-${storedCard.id}`;
+      radioInput.value = storedCard.id;
 
-        // Update the Component paymentData value with the new one.
-        component.updatePaymentData(paymentData.paymentData);
+      const radioLabel = document.createElement("label");
+      radioLabel.htmlFor = radioInput.id;
+      radioLabel.textContent = ` ${storedCard.brand} ending in ${storedCard.lastFour}`;
 
-        console.log("onShippingAddressChange: success");
-      },
-      onShippingOptionsChange: async function (data, actions, component) {
-        console.log(data, component);
+      const div = document.createElement("div");
+      div.id = `stored-card-${storedCard.id}`;
+      div.classList.add("payment");
 
-        // Get the current paymentData value stored within the Component.
-        const currentPaymentData = {
-          pspReference: localStorage.getItem("pspReference"),
-          paymentData: component.paymentData,
-          data: data,
-          amount: requestData.amount,
-        };
+      wrapper.appendChild(radioInput);
+      wrapper.appendChild(radioLabel);
+      wrapper.appendChild(div);
+      storedCardsContainer.appendChild(wrapper);
 
-        // Implement the code to call your backend endpoint to update the final amount based on the selected delivery method, passing the paymentData.
-        const response = await fetch("/api/shippingMethods", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(currentPaymentData),
-        });
+      const storedCardComponent = await new Card(checkout, {
+        ...storedCard,
+        showPayButton: false,
+      }).mount(div);
 
-        const paymentData = await response.json();
+      radioInput.addEventListener("change", () => {
+        activeComponent = storedCardComponent;
+      });
+    }
 
-        // Update the Component paymentData value with the new one.
-        component.updatePaymentData(paymentData.paymentData);
-        console.log("onShippingOptionsChange: success");
-      },
-      onAuthorized: async function (data, actions) {
-        finalData = await data;
-        // logic to reject shipping to PO boxes since street address info is not available in onShippingAddressChange nor onShippingOptionsChange
-        if (finalData.deliveryAddress.street.toUpperCase().includes("P.O.")) {
-          console.log("onAuthorized failed: \n");
-          console.log(JSON.stringify(finalData));
-          actions.reject();
-        } else {
-          console.log("onAuthorized success: \n");
-          console.log(JSON.stringify(finalData));
-          actions.resolve();
-        }
-      },
-    };
-    const paypal = new PayPal(checkout, paypalConfig).mount(
+    // New card radio
+    const newCardRadioInput = document.createElement("input");
+    newCardRadioInput.type = "radio";
+    newCardRadioInput.name = "payment-method";
+    newCardRadioInput.id = "radio-new-card";
+    newCardRadioInput.value = "new-card";
+
+    const newCardRadioLabel = document.createElement("label");
+    newCardRadioLabel.htmlFor = "radio-new-card";
+    newCardRadioLabel.textContent = " Pay with new card";
+
+    const newCardRadioContainer = document.getElementById(
+      "new-card-radio-container"
+    );
+    newCardRadioContainer.appendChild(newCardRadioInput);
+    newCardRadioContainer.appendChild(newCardRadioLabel);
+
+    const card = await new Card(checkout, cardConfig).mount(
       "#component-container"
     );
+
+    newCardRadioInput.addEventListener("change", () => {
+      activeComponent = card;
+    });
+
+    document.getElementById("pay-button").addEventListener("click", () => {
+      if (!activeComponent) {
+        alert("Please select a payment method.");
+        return;
+      }
+      if (!activeComponent.isValid) {
+        activeComponent.showValidation();
+        return;
+      }
+      activeComponent.submit();
+    });
   } catch (error) {
     console.error(error);
     alert("Error occurred. Look at console for details.");

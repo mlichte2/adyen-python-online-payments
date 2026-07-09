@@ -123,16 +123,22 @@ async function startCheckout() {
 
     const cardConfig = {
       // brands: [],
-      _disableClickToPay: true,
+      hideCVC: false,
+      _disableClickToPay: false,
       enableStoreDetails: false,
       billingAddressRequired: false,
-      billingAddressMode: "partials",
+      billingAddressMode: "partial",
       hasHolderName: false,
       brandsConfiguration: {},
       clickToPayConfiguration: {
         merchantDisplayName: "Chicago Tech Support",
-        shopperEmail: "test@adyen.com", // Used to recognize your shopper's Click to Pay account.
+        shopperEmail: "michael.lichtenberger@adyen.com", // Used to recognize your shopper's Click to Pay account.
       },
+      onChange: (data) => {
+        console.log("onChange\n");
+        console.log(data);
+      },
+
       // onBinValue: (data) => {
       //   console.log("OnBinValue\n");
       //   console.log(data);
@@ -152,6 +158,34 @@ async function startCheckout() {
     };
 
     const checkout = await AdyenCheckout(configuration);
+
+    // // Mount stored card components
+    // const storedPaymentMethods =
+    //   paymentMethodsResponse.storedPaymentMethods || [];
+    // const storedCardsContainer = document.getElementById(
+    //   "stored-cards-container"
+    // );
+
+    // storedPaymentMethods
+    //   .filter(
+    //     (pm) =>
+    //       pm.type === "scheme" &&
+    //       pm.supportedRecurringProcessingModels.includes("CardOnFile")
+    //   )
+    //   .forEach((storedCard) => {
+    //     const div = document.createElement("div");
+    //     div.id = `stored-card-${storedCard.id}`;
+    //     div.classList.add("payment");
+    //     storedCardsContainer.appendChild(div);
+
+    //     // FIX: Pass the entire storedCard object to the component
+    //     new Card(checkout, {
+    //       ...storedCard,
+    //       // You can add other component-specific options here if needed:
+    //       // hideCVC: false
+    //     }).mount(div); // PRO-TIP: You can just pass the DOM element directly!
+    //   });
+
     const card = await new Card(checkout, cardConfig).mount(
       "#component-container"
     );

@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-TABLE" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Adyen Stored Card CVC Test (Advanced Flow)</title>
+
+    <link
+      rel="stylesheet"
+      href="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/5.64.0/adyen.css"
+    />
+
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+        padding: 20px;
+      }
+      #payment-methods-list {
+        list-style: none;
+        padding: 0;
+      }
+      #payment-methods-list li {
+        margin: 10px 0;
+      }
+      .adyen-checkout__input--error {
+        border: 1px solid #c92a2a;
+      }
+      .adyen-checkout__error-text {
+        color: #c92a2a;
+      }
+      #component-container {
+        border: 1px solid #eee;
+        padding: 20px;
+        margin-top: 15px;
+        border-radius: 8px;
+        min-height: 100px;
+      }
+      #pay-button {
+        background: #0abf53;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        font-size: 16px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="clientKey" class="hidden">{{ client_key }}</div>
+    <h2>Stored Card CVC Test (Advanced Flow)</h2>
+    <p>
+      Select a payment method. When you select AMEX, the CVC field will require
+      4 digits.
+    </p>
+
+    <ul id="payment-methods-list"></ul>
+
+    <div id="component-container"></div>
+
+    <button id="pay-button">Pay</button>
+
+    <script src="https://checkoutshopper-test.adyen.com/checkoutshopper/sdk/6.25.0/adyen.js"></script>
+
+    <script>
+      const { AdyenCheckout, Card, SecuredFields } = window.AdyenWeb;
+      //   const { AdyenCheckout } = window.AdyenWeb;
+      // --- MOCK DATA & CONFIG ---
+
+      console.log(SecuredFields);
+
+      // !! IMPORTANT: Replace with your REAL Client Key
+      const clientKey = document.getElementById("clientKey").innerHTML;
+
+      // This MOCKS the response from Adyen's /paymentMethods endpoint.
+      const mockPaymentMethodsResponse = {
+        paymentMethods: [
+          {
+            // ★★★ The Stored AMEX Card ★★★
+            // The 'brand' property is the key to solving the issue.
+            name: "American Express ending in 0002",
+            brand: "amex",
+            type: "card",
+            storedPaymentMethodId: "8415999999999999",
+          },
+          {
+            // This represents the "new card" option
+            name: "Use a new credit card",
+            type: "card",
+          },
+        ],
+      };
+
+      // This will hold our active Adyen component
+      let activeCardComponent;
+      // This will hold the component's state (the "token")
+      let paymentState = {};
+
+      // --- ADYEN INITIALIZATION ---
+
+      async function initializeCheckout() {
+        try {
+          // 1. Create the global configuration
+          // Notice there is NO 'session' object here.
+          const configuration = {
+            environment: "TEST",
+            clientKey: clientKey,
+            countryCode: "US",
+            paymentMethodsResponse: mockPaymentMethodsResponse,
+            onError: (error, component) => {
+              console.error(error.name, error.message);
+            },
+          };
+
+          // 2. Create AdyenCheckout instance
+          const checkout = await AdyenCheckout(configuration);
+
+          // 3. Render the payment method radio buttons
+          const pmList = document.getElementById("payment-methods-list");
+
+          mockPaymentMethodsResponse.paymentMethods.forEach((pm) => {
+            const li = document.createElement("li");
+            const input = document.createElement("input");
+            input.type = "radio";
+            input.name = "payment-method";
+            input.id = pm.storedPaymentMethodId || "new-card";
+            input.value = pm.storedPaymentMethodId || "new-card";
+
+            const label = document.createElement("label");
+            label.htmlFor = input.id;
+            label.textContent = " " + pm.name;
+
+            li.appendChild(input);
+            li.appendChild(label);
+            pmList.appendChild(li);
+
+            // 4. Add event listener to mount the correct component on change
+            input.addEventListener("change", () => {
+              mountCardComponent(checkout, pm);
+            });
+          });
+
+          // 5. Handle the pay button click
+          document
+            .getElementById("pay-button")
+            .addEventListener("click", () => {
+              if (!activeCardComponent) {
+                alert("Please select a payment method.");
+                return;
+              }
+
+              // Check if the component's state is valid
+              if (paymentState.isValid) {
+                // ★★★ This is the core of the Advanced Flow ★★★
+                // At this point, you send 'paymentState.data' to your server.
+                // Your server then uses this data to make a /payments call.
+                console.log(
+                  "Payment Data (SEND THIS TO YOUR SERVER):",
+                  paymentState.data
+                );
+                alert(
+                  "Payment data is valid. Check the console!\n\n" +
+                    JSON.stringify(paymentState.data, null, 2)
+                );
+              } else {
+                // If not valid, show the validation errors
+                console.warn("Form is not valid.");
+                activeCardComponent.showValidation();
+              }
+            });
+        } catch (error) {
+          console.error("Adyen Checkout failed to initialize:", error);
+        }
+      }
+
+      function mountCardComponent(checkout, paymentMethod) {
+        // 6. Clean up any existing component
+        if (activeCardComponent) {
+          activeCardComponent.unmount();
+        }
+        paymentState = {}; // Clear the state
+
+        // 7. Create and mount the 'card' component
+        activeCardComponent = checkout
+          .create("card", {
+            // ★★★ THIS IS THE SOLUTION ★★★
+            // We pass all properties of the paymentMethod object
+            ...paymentMethod,
+
+            // We add an 'onChange' listener to capture the state
+            onChange: (state, component) => {
+              paymentState = state;
+            },
+          })
+          .mount("#component-container");
+      }
+
+      // Start the application
+      initializeCheckout();
+    </script>
+  </body>
+</html>

@@ -1,19 +1,14 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
-const { AdyenCheckout, Klarna } = window.AdyenWeb;
 
-// Function to create AdyenCheckout instance
-async function createAdyenCheckout(session) {
+async function createAdyenCheckout(session, paymentMethodsConfiguration) {
   return AdyenCheckout({
     session: session,
     clientKey,
     environment: "test",
-    amount: {
-      value: 10000,
-      currency: "EUR",
-    },
     locale: "en_US",
-    countryCode: "NL",
+    countryCode: "US",
     showPayButton: true,
+    paymentMethodsConfiguration,
     onPaymentCompleted: (result, component) => {
       console.info("onPaymentCompleted", result, component);
       handleOnPaymentCompleted(result.resultCode);
@@ -35,7 +30,6 @@ async function createAdyenCheckout(session) {
   });
 }
 
-// Function to handle payment completion redirects
 function handleOnPaymentCompleted(resultCode) {
   switch (resultCode) {
     case "Authorised":
@@ -51,7 +45,6 @@ function handleOnPaymentCompleted(resultCode) {
   }
 }
 
-// Function to handle payment failure redirects
 function handleOnPaymentFailed(resultCode) {
   switch (resultCode) {
     case "Cancelled":
@@ -64,7 +57,6 @@ function handleOnPaymentFailed(resultCode) {
   }
 }
 
-// Function to start checkout
 async function startCheckout() {
   try {
     const session = await fetch("/api/sessions", {
@@ -74,27 +66,33 @@ async function startCheckout() {
       },
     }).then((response) => response.json());
 
-    const checkout = await createAdyenCheckout(session);
+    const paymentMethodsConfiguration = {
+      card: {
+        // showBrandIcon: true,
+        // // hasHolderName: true,
+        // // holderNameRequired: true,
+        billingAddressRequired: true,
+        billingAddressMode: "partial",
+        disableIOSArrowKeys: false,
+        // placeholders: {
+        //   cardNumber: "1234 5678 9012 3456",
+        //   expiryDate: "MM/YY",
+        //   securityCodeThreeDigits: "123",
+        //   securityCodeFourDigits: "1234",
+        //   holderName: "J. Smith",
+        // },
+        data: {
+          holderName: "Cardholder Name",
+        },
+      },
+    };
 
-    console.log(checkout.paymentMethodsResponse);
+    const checkout = await createAdyenCheckout(
+      session,
+      paymentMethodsConfiguration
+    );
 
-    const klarnaPaymentMethods =
-      checkout.paymentMethodsResponse.paymentMethods.filter(
-        (element) =>
-          element.type == "klarna" ||
-          element.type == "klarna_account" ||
-          element.type == "klarna_paynow"
-      );
-
-    for (let i = 0; i < klarnaPaymentMethods.length; i++) {
-      const element = klarnaPaymentMethods[i];
-      console.log(element);
-      const klarna = new Klarna(checkout, {
-        type: element.type, // Types: 'klarna_paynow' (pay now), 'klarna' (pay later), 'klarna_account' (pay over time)
-        name: element.name,
-        useKlarnaWidget: true,
-      }).mount("#component-container-" + i);
-    }
+    checkout.create("dropin").mount("#dropin-container");
   } catch (error) {
     console.error(error);
     alert("Error occurred. Look at console for details");
