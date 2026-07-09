@@ -50,6 +50,35 @@ def create_app():
     def dropin(integration, flow):
         return render_template('components/'+ flow + '/' + integration + '.html', method=integration, client_key=get_adyen_client_key(), web_version=WEB_VERSION)
 
+    # Component configuration explorer (reads the generated config catalog)
+    @app.route('/config-explorer')
+    def config_explorer_index():
+        catalog = _load_config_catalog()
+        comps = (catalog or {}).get('components', {})
+        components = [
+            {'name': name,
+             'count': sum(1 for p in comps[name]['props'] if p.get('category') == 'merchant')}
+            for name in sorted(comps)
+        ]
+        return render_template('config-explorer-index.html',
+                               components=components,
+                               version=(catalog or {}).get('version'))
+
+    @app.route('/config-explorer/<component>')
+    def config_explorer(component):
+        catalog = _load_config_catalog()
+        components = (catalog or {}).get('components', {})
+        # case-insensitive match so /config-explorer/card resolves to "Card"
+        key = next((k for k in components if k.lower() == component.lower()), None)
+        if key is None:
+            return render_template('error.html'), 404
+        comp = components[key]
+        return render_template('config-explorer.html',
+                               component=key,
+                               version=catalog['version'],
+                               extends=comp.get('extends'),
+                               props=comp['props'])
+
     # Perform /sessions call
     @app.route('/api/sessions', methods=['POST'])
     def sessions():
@@ -328,6 +357,15 @@ def create_app():
                                    'img/favicon.ico')
 
     return app
+
+
+def _load_config_catalog():
+    """Load the generated component config catalog for the current WEB_VERSION, if present."""
+    path = os.path.join(os.path.dirname(__file__), 'config_catalog', f'{WEB_VERSION}.json')
+    if not os.path.exists(path):
+        return None
+    with open(path) as f:
+        return json.load(f)
 
 
 def _parse_result(result):

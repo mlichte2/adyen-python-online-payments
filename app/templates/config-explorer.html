@@ -1,0 +1,56 @@
+{% extends "layout.html" %} {% block content %}
+<title>Config Explorer - {{ component }}</title>
+
+<div class="main-container">
+  <p><a href="{{ url_for('config_explorer_index') }}">&larr; All components</a></p>
+  <h1>{{ component }} configuration</h1>
+  <p>
+    Adyen Web <code>{{ version }}</code>, extracted from the component's TypeScript config interface.
+    Base props from <code>{{ extends or 'the base element' }}</code> are not shown.
+    Toggle options, then export a config object: <strong>checked</strong> params are written with their
+    value, <strong>unchecked</strong> params are added commented out.
+    This is best-effort parsing, verify against the
+    <a href="https://docs.adyen.com/checkout" target="_blank" rel="noopener">Adyen docs</a>.
+  </p>
+
+  <div style="margin: 1rem 0; display: flex; gap: 0.5rem; align-items: center; flex-wrap: wrap;">
+    <button id="export-btn" class="button">Export config object</button>
+    <button id="copy-btn" class="button" style="display: none;">Copy</button>
+    <button id="select-defaults" class="button" type="button">Defaults only</button>
+    <button id="select-all" class="button" type="button">Select all</button>
+    <button id="select-none" class="button" type="button">Clear</button>
+  </div>
+
+  <pre id="export-output" style="display: none; background: #f8f9fa; padding: 1rem; overflow: auto; max-height: 360px; text-align: left; font-size: 0.8rem;"></pre>
+
+  <table class="table table-sm" style="text-align: left;">
+    <thead>
+      <tr>
+        <th style="width: 70px;">include</th>
+        <th>parameter</th>
+        <th style="width: 300px;">value</th>
+      </tr>
+    </thead>
+    <tbody id="props-body"></tbody>
+  </table>
+
+  {% set internal_props = props | selectattr('category', 'equalto', 'internal') | list %}
+  {% if internal_props %}
+  <details style="margin-top: 1rem;">
+    <summary style="cursor: pointer;">Internal / read-only props ({{ internal_props | length }})</summary>
+    <ul style="margin-top: 0.5rem;">
+      {% for p in internal_props %}
+      <li><code>{{ p.name }}</code>: <span style="color:#666;">{{ p.type }}</span>{% if p.description %} - {{ p.description }}{% endif %}</li>
+      {% endfor %}
+    </ul>
+  </details>
+  {% endif %}
+</div>
+
+<script>
+  window.CATALOG_PROPS = {{ props | tojson }};
+  window.COMPONENT_NAME = {{ component | tojson }};
+  window.CATALOG_VERSION = {{ version | tojson }};
+</script>
+<script src="{{ url_for('static', filename='js/configExplorer.js') }}"></script>
+{% endblock %}

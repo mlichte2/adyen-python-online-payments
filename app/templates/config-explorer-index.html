@@ -1,0 +1,36 @@
+{% extends "layout.html" %} {% block content %}
+<title>Config Explorer</title>
+
+<div class="main-container">
+  <div class="home-info">
+    <h1>Configuration explorer</h1>
+    {% if version %}
+    <p>
+      Browse the configurable parameters for each Adyen Web component (version
+      <code>{{ version }}</code>) and export a ready-to-paste config object with defaults filled in
+      and non-default options commented out.
+    </p>
+    {% else %}
+    <p>
+      No config catalog found. Generate one with:
+      <br /><code>python tools/generate_config_catalog.py --version &lt;WEB_VERSION&gt;</code>
+    </p>
+    {% endif %}
+  </div>
+
+  {% if components %}
+  <ul class="integration-list">
+    {% for component in components %}
+    <li class="integration-list-item">
+      <a class="integration-list-item-link" href="{{ url_for('config_explorer', component=component.name) }}">
+        <div class="title-container">
+          <p class="integration-list-item-title">{{ component.name }}</p>
+          <p class="integration-list-item-subtitle">{{ component.count }} configurable parameter{{ '' if component.count == 1 else 's' }}</p>
+        </div>
+      </a>
+    </li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+</div>
+{% endblock %}
