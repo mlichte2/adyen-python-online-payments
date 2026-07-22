@@ -8,7 +8,7 @@
     {% if response %}
       <div class="info" style="text-align:left;width:100%;margin-bottom:1rem;">
         <table class="table table-sm" style="margin-bottom:0.5rem;">
-          {% for key in ['resultCode','pspReference','merchantReference','refusalReason','refusalReasonCode','errorCode'] %}
+          {% for key in ['resultCode','status','pspReference','merchantReference','refusalReason','refusalReasonCode','errorCode'] %}
             {% if response.get(key) %}
               <tr><th style="width:200px;">{{ key }}</th><td>{{ response[key] }}</td></tr>
             {% endif %}

@@ -37,10 +37,13 @@ priority. Each item notes *what*, *why it matters for support*, and *where*.
   *Files:* `app/templates/components/advanced/cardWithStoredCard.html`, `.../cardwithStoredCard.html`.
 
 - [x] **Resolve or remove the dead `checkout_success` GET /sessions logic.**
-  Removed the misleading commented-out block.
-  The commented-out `# TODO adding logic to send GET /sessions response` block should either be
-  implemented (fetch session result by `sessionId`) or deleted so agents aren't misled.
-  *File:* `app/app.py` (`checkout_success`).
+  Implemented: `/handleShopperRedirect` now detects a Sessions flow return (`sessionId` present
+  on the returnUrl) and calls `GET /sessions/{sessionId}` (`adyen_get_session_result` in
+  `app/main/sessions.py`) to fetch the final payment outcome, instead of the previous
+  Advanced-flow-only `/payments/details` call. The result is flattened onto the existing
+  success/failed templates (`resultCode`, `status`, `pspReference`, `merchantReference`).
+  *Files:* `app/app.py` (`handle_shopper_redirect`, `_handle_session_redirect`,
+  `_flatten_session_result`), `app/main/sessions.py` (`adyen_get_session_result`).
 
 ---
 

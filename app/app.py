@@ -9,7 +9,7 @@ import requests
 
 
 
-from main.sessions import adyen_sessions
+from main.sessions import adyen_sessions, adyen_get_session_result
 from main.payment_methods import adyen_payment_methods
 from main.payments import adyen_payments
 from main.payments_details import adyen_payments_details
@@ -269,35 +269,41 @@ def create_app():
 
     @app.route('/result/success', methods=['GET'])
     def checkout_success():
-        result = _parse_result(request.args.get('paymentResult'))
+        result = _get_result_from_request(request.args)
         return render_template('checkout-success.html', response=result)
 
     @app.route('/result/failed', methods=['GET'])
     def checkout_failure():
-        result = _parse_result(request.args.get('paymentResult'))
+        result = _get_result_from_request(request.args)
         return render_template('checkout-failed.html', response=result)
 
     @app.route('/result/pending', methods=['GET'])
     def checkout_pending():
-        result = _parse_result(request.args.get('paymentResult'))
+        result = _get_result_from_request(request.args)
         return render_template('checkout-success.html', response=result)
 
     @app.route('/result/error', methods=['GET'])
     def checkout_error():
-        result = _parse_result(request.args.get('paymentResult'))
+        result = _get_result_from_request(request.args)
         return render_template('checkout-failed.html', response=result)
     
     # Handle redirect during payment. This gets called during the redirect flow
     @app.route('/handleShopperRedirect', methods=['GET', 'POST'])
     def handle_shopper_redirect():
+        redirect_data = request.args if request.method == 'GET' else request.form
+
+        # Sessions flow: Adyen appends sessionId (+ sessionResult) to the returnUrl.
+        # Look up the outcome via GET /sessions/{sessionId} instead of /payments/details.
+        if 'sessionId' in redirect_data:
+            return _handle_session_redirect(redirect_data)
+
+        # Advanced flow: Adyen appends redirectResult/payload to the returnUrl.
         adyen = Adyen.Adyen()
         adyen.payment.client.xapikey = get_adyen_api_key()
         adyen.payment.client.platform = "test"  # change to live for production
         adyen.payment.client.merchant_account = get_adyen_merchant_account()
 
         # Payload for payment/details call
-        redirect_data = request.args if request.method == 'GET' else request.form
-
         details = {}
 
         if 'redirectResult' in redirect_data:
@@ -379,6 +385,77 @@ def _parse_result(result):
         return json.loads(result)
     except (json.JSONDecodeError, TypeError):
         return {"raw": str(result)}
+
+
+# GET /sessions/{sessionId} returns a session-level `status`, not a payment resultCode.
+# Map it so a session with no `payments` entry (e.g. shopper cancelled, session expired)
+# still resolves to a result page.
+_SESSION_STATUS_TO_RESULT_CODE = {
+    'completed': 'Authorised',
+    'paymentPending': 'Pending',
+    'refused': 'Refused',
+    'canceled': 'Cancelled',
+    'expired': 'Expired',
+}
+
+
+def _get_result_from_request(args):
+    """Resolve the response dict to render on a /result/* page.
+
+    Sessions flow: the front end passes sessionId (+ sessionResult) from the
+    onPaymentCompleted/onPaymentFailed event; look up the verified outcome via
+    GET /sessions/{sessionId} instead of trusting the client-side result.
+    Advanced flow: the front end passes paymentResult directly.
+    """
+    session_id = args.get('sessionId')
+    if session_id:
+        http_response = adyen_get_session_result(session_id, args.get('sessionResult'))
+        if isinstance(http_response, tuple):
+            logging.error(f"GET /sessions/{session_id} lookup failed: {http_response[0]}")
+            return None
+        return _flatten_session_result(json.loads(http_response))
+    return _parse_result(args.get('paymentResult'))
+
+
+def _flatten_session_result(session):
+    """Merge a GET /sessions/{sessionId} response with its first payment's result so the
+    existing result-page templates (which read resultCode/pspReference/amount from the
+    top level) can render Sessions flow redirect outcomes."""
+    flattened = dict(session)
+    payments = session.get('payments') or []
+    first_payment = payments[0] if payments else {}
+    flattened['resultCode'] = first_payment.get('resultCode') or \
+        _SESSION_STATUS_TO_RESULT_CODE.get(session.get('status'), session.get('status'))
+    flattened['pspReference'] = first_payment.get('pspReference')
+    flattened['amount'] = first_payment.get('amount')
+    flattened['paymentMethod'] = first_payment.get('paymentMethod')
+    flattened['merchantReference'] = session.get('reference')
+    return flattened
+
+
+def _handle_session_redirect(redirect_data):
+    """Sessions flow return handler: look up the payment outcome via
+    GET /sessions/{sessionId} and render the matching result page."""
+    session_id = redirect_data['sessionId']
+    session_result = redirect_data.get('sessionResult')
+
+    http_response = adyen_get_session_result(session_id, session_result)
+
+    # adyen_get_session_result returns a (body, status_code) tuple on an Adyen API error
+    if isinstance(http_response, tuple):
+        logging.error(f"GET /sessions/{session_id} redirect failed: {http_response[0]}")
+        return render_template('checkout-failed.html')
+
+    response = _flatten_session_result(json.loads(http_response))
+
+    if response['resultCode'] == "Authorised":
+        return render_template('checkout-success.html', response=response)
+    elif response['resultCode'] in ["Pending", "Received"]:
+        return render_template('checkout-success.html', response=response)
+    elif response['resultCode'] == "Refused":
+        return render_template('checkout-failed.html', response=response)
+    else:
+        return render_template('checkout-failed.html', response=response)
 
 
 #  process payload asynchronously

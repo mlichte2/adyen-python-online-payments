@@ -1,5 +1,6 @@
 import Adyen
 import json
+import logging
 from Adyen.exceptions import AdyenError
 from main.config import get_adyen_api_key, get_adyen_merchant_account, get_adyen_checkout_api_verson
 from main.errors import handle_adyen_error
@@ -77,3 +78,43 @@ def adyen_sessions(host_url):
 
     formatted_response = json.dumps((json.loads(result.raw_response)))
     return formatted_response
+
+
+'''
+Get the result of a payment session by calling GET /sessions/{sessionId}
+
+Used on the return page after a redirect payment method (3DS challenge, iDEAL,
+PayPal, etc.) to look up the final outcome of a Sessions flow payment.
+Adyen appends `sessionId` and `sessionResult` to the returnUrl when redirecting
+the shopper back, so no manual /payments/details call is needed for this flow.
+
+Parameters
+    ----------
+    session_id : string
+        The `sessionId` value Adyen appended to the returnUrl.
+    session_result : string
+        The `sessionResult` value Adyen appended to the returnUrl.
+'''
+
+
+def adyen_get_session_result(session_id, session_result=None):
+    adyen = Adyen.Adyen()
+    adyen.payment.client.xapikey = get_adyen_api_key()
+    adyen.payment.client.platform = "test"  # change to live for production
+    adyen.payment.client.api_checkout_version = get_adyen_checkout_api_verson()
+
+    query_parameters = {"sessionResult": session_result} if session_result else {}
+
+    logging.info("GET /sessions/%s request | sessionResult=%s", session_id, session_result)
+
+    try:
+        result = adyen.checkout.payments_api.get_result_of_payment_session(
+            session_id, query_parameters=query_parameters
+        )
+    except AdyenError as error:
+        return handle_adyen_error(f"/sessions/{session_id}", error)
+
+    parsed = json.loads(result.raw_response)
+    logging.info("GET /sessions/%s response:\n%s", session_id, json.dumps(parsed, indent=2))
+
+    return json.dumps(parsed)
