@@ -10,9 +10,9 @@ const shopperReference = "YOUR_SHOPPER_REFERENCE";
 const paymentMethodsData = {
   amount: {
     value: 6000,
-    currency: "AUD",
+    currency: "USD",
   },
-  countryCode: "AU",
+  countryCode: "US",
   shopperReference: shopperReference,
   // blockedPaymentMethods: ["clicktopay"],
 };

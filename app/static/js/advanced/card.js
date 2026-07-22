@@ -126,8 +126,8 @@ async function startCheckout() {
       hideCVC: false,
       _disableClickToPay: false,
       enableStoreDetails: false,
-      billingAddressRequired: false,
-      billingAddressMode: "partial",
+      billingAddressRequired: true,
+      billingAddressMode: "full",
       hasHolderName: false,
       brandsConfiguration: {},
       clickToPayConfiguration: {

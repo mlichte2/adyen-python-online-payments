@@ -154,9 +154,7 @@ async function startCheckout() {
     const adyenCheckout = await AdyenCheckout(configuration);
     const dropin = new Dropin(adyenCheckout, {
       paymentMethodsConfiguration: paymentMethodsConfiguration,
-      openPaymentMethod: {
-        type: "scheme",
-      },
+      instantPaymentTypes: ["googlepay", "paypal"],
     }).mount("#dropin-container");
   } catch (error) {
     console.error(error);
