@@ -4,11 +4,11 @@ requires-python = ">=3.13"
 
 [[package]]
 name = "adyen"
-version = "13.4.0"
+version = "15.0.2"
 source = { registry = "https://artifacts-cache.is.adyen.com/artifactory/api/pypi/adyen-global-pypi-virtual/simple" }
-sdist = { url = "https://artifacts-cache.is.adyen.com/artifactory/api/pypi/adyen-global-pypi-virtual/packages/packages/1b/5e/e1c93bee5f7cf896097bfb32e68d8e04e15889de4e1401ae1ab68eb41407/adyen-13.4.0.tar.gz", hash = "sha256:2360713669dc7edd21cdfc46db4e4ed54806489b38acfffc32c270f9fdf4cb06" }
+sdist = { url = "https://artifacts-cache.is.adyen.com/artifactory/api/pypi/adyen-global-pypi-virtual/packages/packages/88/b5/91d81bab219b50c60433546c96fd2423cbd183cf10b0c47c7f99fc778e85/adyen-15.0.2.tar.gz", hash = "sha256:76e7dbf683c47ae2c9ba2a5c0d8400dd4429901590b6dc6e8e003f5591a85c99" }
 wheels = [
-    { url = "https://artifacts-cache.is.adyen.com/artifactory/api/pypi/adyen-global-pypi-virtual/packages/packages/38/b0/5eb86699f4d0e120ef80980ce5a3f9a3d357e9b454d19605deb163f3b87f/Adyen-13.4.0-py3-none-any.whl", hash = "sha256:a3f5d1c004a173c0a3ac628099987fad5b6f6c0dc470fa539d85d177f366a824" },
+    { url = "https://artifacts-cache.is.adyen.com/artifactory/api/pypi/adyen-global-pypi-virtual/packages/packages/59/24/2c47557ef879686eab250881d33accde73981662cc6e21cd9b3cf99e65bc/adyen-15.0.2-py3-none-any.whl", hash = "sha256:55480878f2095667df33e3861aaf8a48e3b584fd576be96651c9db1ecb25beba" },
 ]
 
 [[package]]
