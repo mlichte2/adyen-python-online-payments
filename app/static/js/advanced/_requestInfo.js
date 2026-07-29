@@ -21,13 +21,13 @@ const paymentMethodsData = {
 
 const paymentsData = {
   ...paymentMethodsData,
-  reference: "TEST_123",
+  reference: crypto.randomUUID(),
   returnUrl: window.location.origin + "/handleShopperRedirect",
   shopperEmail: "test@adyen.com",
   shopperReference: shopperReference,
   shopperInteraction: "Ecommerce",
   recurringProcessingModel: "CardOnFile",
-  storePaymentMethod: true,
+  storePaymentMethod: false,
   lineItems: [
     {
       quantity: "1",
