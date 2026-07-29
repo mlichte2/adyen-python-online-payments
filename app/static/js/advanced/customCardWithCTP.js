@@ -7,6 +7,13 @@ let state = {
   data: {},
 };
 
+// Captures the full /payments or /payments/details response for the
+// ClickToPay flow, so the result pages can show more than the
+// resultCode-only object the SDK's onPaymentCompleted/onPaymentFailed events
+// provide. Not used by the direct CustomCard pay-button flow, which already
+// passes its full response via handleServerResponse.
+let lastPaymentResponse = null;
+
 // Handles responses from your server
 const handleServerResponse = (res, component) => {
   if (res.action) {
@@ -104,6 +111,7 @@ async function startCheckout() {
           }).then((response) => response.json());
 
           console.log(paymentsResult);
+          lastPaymentResponse = paymentsResult;
 
           if (!paymentsResult.resultCode) {
             actions.reject();
@@ -134,6 +142,8 @@ async function startCheckout() {
             body: JSON.stringify(state.data),
           }).then((response) => response.json());
 
+          lastPaymentResponse = paymentsDetailsResult;
+
           if (!paymentsDetailsResult.resultCode) {
             actions.reject();
             return;
@@ -156,11 +166,11 @@ async function startCheckout() {
       },
       onPaymentCompleted: (result, component) => {
         console.info("onPaymentCompleted", result, component);
-        handleRedirect(result);
+        handleRedirect(lastPaymentResponse || result);
       },
       onPaymentFailed: (result, component) => {
         console.info("onPaymentFailed", result, component);
-        handleRedirect(result);
+        handleRedirect(lastPaymentResponse || result);
       },
       onError: (error, component) => {
         console.error(

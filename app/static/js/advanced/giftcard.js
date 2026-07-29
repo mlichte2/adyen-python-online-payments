@@ -3,6 +3,12 @@ const { AdyenCheckout, Giftcard, Card } = window.AdyenWeb;
 
 let checkout; // Will be initialized later
 
+// Captures the full /payments/details response so the result pages can show
+// more than the resultCode-only object the SDK's onPaymentCompleted event
+// provides. The onSubmit flow already redirects with the full response
+// directly, so it does not need this.
+let lastPaymentResponse = null;
+
 // Handles redirect logic
 function handleRedirect(result) {
   const params = new URLSearchParams({
@@ -114,6 +120,8 @@ async function startCheckout() {
             body: JSON.stringify(state.data),
           }).then((response) => response.json());
 
+          lastPaymentResponse = paymentsDetailsResult;
+
           // If the /payments/details request from your server fails, or if an unexpected error occurs.
           if (!paymentsDetailsResult.resultCode) {
             actions.reject();
@@ -139,7 +147,7 @@ async function startCheckout() {
       },
       onPaymentCompleted: (result, component) => {
         console.info("onPaymentCompleted", result, component);
-        handleRedirect(result);
+        handleRedirect(lastPaymentResponse || result);
       },
       onError: (error, component) => {
         console.error(

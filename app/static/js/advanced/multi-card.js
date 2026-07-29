@@ -1,6 +1,11 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
 const { AdyenCheckout, Card } = window.AdyenWeb;
 
+// Captures the full /payments or /payments/details response so the result
+// pages can show more than the resultCode-only object the SDK's
+// onPaymentCompleted/onPaymentFailed events provide.
+let lastPaymentResponse = null;
+
 async function createOrder() {
   const orderRequestData = {
     reference: "12345",
@@ -98,6 +103,7 @@ async function startCheckout(split) {
           }).then((response) => response.json());
 
           console.log("payments result:\n", paymentsResult);
+          lastPaymentResponse = paymentsResult;
 
           // If the /payments request from your server fails, or if an unexpected error occurs.
           if (!paymentsResult.resultCode) {
@@ -135,6 +141,8 @@ async function startCheckout(split) {
             body: JSON.stringify(state.data),
           }).then((response) => response.json());
 
+          lastPaymentResponse = paymentsDetailsResult;
+
           // If the /payments/details request from your server fails, or if an unexpected error occurs.
           if (!paymentsDetailsResult.resultCode) {
             actions.reject();
@@ -160,11 +168,11 @@ async function startCheckout(split) {
       },
       onPaymentCompleted: (result, component) => {
         console.info("onPaymentCompleted", result, component);
-        handleOnPaymentCompleted(result, component);
+        handleOnPaymentCompleted(lastPaymentResponse || result, component);
       },
       onPaymentFailed: (result, component) => {
         console.info("onPaymentFailed", result, component);
-        handleOnPaymentFailed(result, component);
+        handleOnPaymentFailed(lastPaymentResponse || result, component);
       },
       onError: (error, component) => {
         console.error(

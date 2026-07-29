@@ -1,6 +1,12 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
 const { AdyenCheckout } = window.AdyenWeb;
 
+// Captures the full /payments/details response for the 3DS challenge path,
+// so the result pages can show more than the resultCode-only object the
+// SDK's onPaymentCompleted/onPaymentFailed events provide. The non-challenge
+// path already redirects with the full /payments response directly.
+let lastPaymentResponse = null;
+
 document.getElementById("pay-button").addEventListener("click", async () => {
   const cardNumber = document.getElementById("card-number").value;
   const expiryMonth = document.getElementById("expiry-month").value;
@@ -88,6 +94,8 @@ document.getElementById("pay-button").addEventListener("click", async () => {
               body: JSON.stringify(state.data),
             }).then((response) => response.json());
 
+            lastPaymentResponse = paymentsDetailsResult;
+
             if (!paymentsDetailsResult.resultCode) {
               actions.reject();
               return;
@@ -102,10 +110,10 @@ document.getElementById("pay-button").addEventListener("click", async () => {
           }
         },
         onPaymentCompleted: (result, component) => {
-          handlePaymentResult(result);
+          handlePaymentResult(lastPaymentResponse || result);
         },
         onPaymentFailed: (result, component) => {
-          handlePaymentResult(result);
+          handlePaymentResult(lastPaymentResponse || result);
         },
         onError: (error, component) => {
           console.error("onError", error);

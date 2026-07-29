@@ -1,6 +1,11 @@
 const clientKey = document.getElementById("clientKey").innerHTML;
 const { AdyenCheckout, Dropin } = window.AdyenWeb;
 
+// Captures the full /payments or /payments/details response so the result
+// pages can show more than the resultCode-only object the SDK's
+// onPaymentCompleted/onPaymentFailed events provide.
+let lastPaymentResponse = null;
+
 async function startCheckout() {
   try {
     // Create a new session
@@ -68,6 +73,7 @@ async function startCheckout() {
           }).then((response) => response.json());
 
           console.log(paymentsResult);
+          lastPaymentResponse = paymentsResult;
 
           // If the /payments request from your server fails, or if an unexpected error occurs.
           if (!paymentsResult.resultCode) {
@@ -102,6 +108,8 @@ async function startCheckout() {
             body: JSON.stringify(state.data),
           }).then((response) => response.json());
 
+          lastPaymentResponse = paymentsDetailsResult;
+
           // If the /payments/details request from your server fails, or if an unexpected error occurs.
           if (!paymentsDetailsResult.resultCode) {
             actions.reject();
@@ -132,7 +140,7 @@ async function startCheckout() {
       },
       onPaymentFailed: (result, component) => {
         console.info("onPaymentFailed", result, component);
-        handleOnPaymentFailed(result, component);
+        handleOnPaymentFailed(lastPaymentResponse || result, component);
       },
       onError: (error, component) => {
         console.error(
