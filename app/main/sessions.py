@@ -4,6 +4,7 @@ import logging
 from Adyen.exceptions import AdyenError
 from main.config import get_adyen_api_key, get_adyen_merchant_account, get_adyen_checkout_api_verson
 from main.errors import handle_adyen_error
+import uuid
 
 '''
 Create Payment Session by calling /sessions endpoint
@@ -26,11 +27,13 @@ def adyen_sessions(host_url):
     adyen.payment.client.merchant_account = get_adyen_merchant_account()
     adyen.payment.client.api_checkout_version = get_adyen_checkout_api_verson()
 
+    merchantReference = uuid.uuid4()
+
     request = {
         "allowedPaymentMethods": [],
         "blockedPaymentMethods": [],
         "merchantAccount": "ADYEN_MERCHANT_ACCOUNT",
-        "reference": "YOUR_ORDER_REFERENCE",
+        "reference": str(merchantReference),
         "amount": {
             "currency": "USD",
             "value": 10000
