@@ -80,10 +80,34 @@ def create_app():
                                props=comp['props'])
 
     # Perform /sessions call
-    @app.route('/api/sessions', methods=['POST'])
+    @app.route('/api/sessions', methods=['POST', 'PATCH'])
     def sessions():
-            host_url = request.host_url 
-            return adyen_sessions(host_url)
+            if request.method == "POST":
+                host_url = request.host_url 
+                payable = request.json.get("payable")
+                print(payable)
+                return adyen_sessions(host_url, payable=payable)
+            if request.method == "PATCH": 
+                data = request.json
+                endpoint = "https://checkout-test.adyen.com/v72/sessions/" + request.json['id']
+                
+                apiKey = get_adyen_api_key()
+
+                amount = request.json.get("amount") or {"value": 10001, "currency": "USD"}
+
+                payload = {
+                    "sessionData": request.json["sessionData"],
+                    "amount": {
+                        "value": amount["value"],
+                        "currency": amount["currency"]
+                    },
+                    "payable": True
+                }
+
+                session_update_response = requests.patch(endpoint, json=payload, headers={'X-API-KEY': apiKey})
+                return session_update_response.json()
+            else: 
+                return Response(status=405)
 
     @app.route('/api/paymentMethods', methods=['POST'])
     def payment_methods():

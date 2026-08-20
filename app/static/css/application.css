@@ -321,6 +321,50 @@ a:hover {
   height: 100%;
 }
 
+.session-update-container {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  padding: 0 20px;
+  margin-bottom: 16px;
+}
+
+.session-update-label {
+  font-size: 0.85em;
+  color: #687282;
+}
+
+.session-update-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.session-update-input {
+  flex: 1;
+  height: 44px;
+  border: 1px solid #e6e9eb;
+  border-radius: 6px;
+  padding: 0 12px;
+  font-size: 1em;
+  color: #00112c;
+  background: #fff;
+  transition: border-color 0.3s ease-out;
+}
+
+.session-update-input:focus {
+  outline: none;
+  border-color: #06f;
+}
+
+.session-update-button {
+  flex: 0 0 auto;
+  width: auto;
+  padding: 12px 20px;
+}
+
 /* Adyen Components */
 .payment {
   width: 100%;
@@ -344,6 +388,26 @@ a:hover {
 .status {
   margin: 100px 0 126px;
   text-align: center;
+  /* Cap the width and allow this flex item to shrink below its content's
+     intrinsic size (flex items default to min-width: auto), otherwise a long
+     unbroken string in the response details below blows out the whole page. */
+  width: 100%;
+  max-width: 600px;
+  min-width: 0;
+  padding: 0 16px;
+  box-sizing: border-box;
+}
+
+.status .info table td,
+.status .info table th {
+  word-break: break-word;
+  overflow-wrap: anywhere;
+}
+
+.status .info pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  overflow-wrap: anywhere;
 }
 
 .status .status-image {

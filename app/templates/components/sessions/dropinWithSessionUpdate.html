@@ -1,0 +1,51 @@
+{% extends "layout.html" %} {% block content %}
+
+<meta charset="UTF-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+<!-- Web Version can be changed in app/app.py variable WEB_VERSION = "x.x.x"-->
+
+<link
+  rel="stylesheet"
+  href="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.css"
+  crossorigin="anonymous"
+/>
+
+<script
+  src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.js"
+  crossorigin="anonymous"
+></script>
+
+<div id="clientKey" class="hidden">{{ client_key }}</div>
+
+<div id="payment-page">
+  <div class="container">
+    <div class="payment-container">
+      <div class="session-update-container">
+        <label for="sessionAmount" class="session-update-label">
+          Update the amount below (in minor units, e.g. 4000 = $40.00), then click Update to see it reflected here before you pay.
+        </label>
+        <div class="session-update-row">
+          <input
+            type="number"
+            name="sessionAmount"
+            id="sessionAmount"
+            class="session-update-input"
+            placeholder="Amount in minor units (e.g. 4000)"
+          />
+          <input type="button" value="Update" class="button session-update-button" />
+        </div>
+      </div>
+      <div id="dropin-container" class="payment">
+        <!-- Dropin will be rendered here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/sessions/dropinWithSessionUpdate.js') }}"></script>
+{% endblock %}
