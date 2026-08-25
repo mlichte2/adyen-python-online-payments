@@ -84,8 +84,12 @@ def create_app():
     def sessions():
             if request.method == "POST":
                 host_url = request.host_url 
-                payable = request.json.get("payable")
-                print(payable)
+                # Most integrations POST with no body at all, so request.json
+                # would raise on the empty payload; fall back to {} and keep
+                # the adyen_sessions default (payable=True) unless a caller
+                # explicitly opts out (e.g. the session-update flow).
+                payload = request.get_json(silent=True) or {}
+                payable = payload.get("payable", True)
                 return adyen_sessions(host_url, payable=payable)
             if request.method == "PATCH": 
                 data = request.json
