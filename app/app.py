@@ -109,7 +109,17 @@ def create_app():
                 }
 
                 session_update_response = requests.patch(endpoint, json=payload, headers={'X-API-KEY': apiKey})
-                return session_update_response.json()
+
+                if not session_update_response.ok:
+                    logging.error(
+                        "PATCH /sessions/%s failed (%s): %s",
+                        request.json['id'], session_update_response.status_code, session_update_response.text
+                    )
+
+                # Propagate Adyen's actual status code so the client can tell
+                # a rejected update apart from a successful one instead of
+                # always seeing a 200.
+                return session_update_response.json(), session_update_response.status_code
             else: 
                 return Response(status=405)
 

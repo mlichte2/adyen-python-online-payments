@@ -7,6 +7,13 @@ const { AdyenCheckout, Dropin } = window.AdyenWeb;
 // falls back to its own tracked total.
 let pendingAmount = null;
 
+// Adyen rejects PATCH /sessions/{id} once the session is already
+// payable: true ("Session can only be patched if it is not yet payable").
+// beforeSubmit can fire more than once for the same session (e.g. a
+// declined card followed by a retry with a different payment method), so
+// only patch it the first time and just resubmit the existing data after.
+let sessionMadePayable = false;
+
 async function startCheckout() {
   try {
     // Create a new session
@@ -37,6 +44,11 @@ async function startCheckout() {
       },
       beforeSubmit: async (data, component, actions) => {
         try {
+          if (sessionMadePayable) {
+            actions.resolve(data);
+            return;
+          }
+
           // Get the latest session so the server can look up the id and the
           // encoded sessionData it needs to PATCH /sessions/{sessionId}.
           const { session } = component.core.session;
@@ -53,14 +65,18 @@ async function startCheckout() {
             }),
           });
 
-          if (!response.ok) {
-            throw new Error(`Session update failed with status ${response.status}`);
+          const sessionUpdateResponse = await response.json();
+
+          if (!response.ok || !sessionUpdateResponse.sessionData) {
+            // Surface Adyen's actual error (errorCode/message) instead of a
+            // generic message, so failures are easy to diagnose.
+            console.error("Session update failed", response.status, sessionUpdateResponse);
+            throw new Error(
+              sessionUpdateResponse.message || `Session update failed with status ${response.status}`
+            );
           }
 
-          const sessionUpdateResponse = await response.json();
-          if (!sessionUpdateResponse.sessionData) {
-            throw new Error("Session update response is missing sessionData");
-          }
+          sessionMadePayable = true;
 
           // Forward the original submit data along with the refreshed
           // sessionData, otherwise the payment method details collected by

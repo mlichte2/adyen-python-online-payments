@@ -70,10 +70,10 @@ def adyen_sessions(host_url, payable=True):
             }
         ]
         }
-    if payable: 
+    if not payable:
         request["payable"] = False
-    else:
-        request["payable"] = True
+    # When payable is True, omit the field entirely: Adyen defaults a new
+    # session to payable: true, so nothing needs to be sent explicitly.
 
 
     request['merchantAccount'] = get_adyen_merchant_account()
