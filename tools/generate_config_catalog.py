@@ -5,8 +5,8 @@ heuristically parsing the TypeScript source for a pinned adyen-web version.
 
 Pure Python (stdlib + requests). No Node / TypeScript toolchain required.
 
-    python tools/generate_config_catalog.py --version 6.36.0
-    python tools/generate_config_catalog.py --version 6.36.0 --component Card
+    uv run tools/generate_config_catalog.py --version 6.44.0
+    uv run tools/generate_config_catalog.py --version 6.44.0 --component Card
 
 Output: app/config_catalog/<version>.json
 
