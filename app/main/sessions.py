@@ -20,7 +20,7 @@ Parameters
 '''
 
 
-def adyen_sessions(host_url):
+def adyen_sessions(host_url, payable=True):
     adyen = Adyen.Adyen()
     adyen.payment.client.xapikey = get_adyen_api_key()
     adyen.payment.client.platform = "test"  # change to live for production
@@ -70,6 +70,10 @@ def adyen_sessions(host_url):
             }
         ]
         }
+    if payable: 
+        request["payable"] = False
+    else:
+        request["payable"] = True
 
 
     request['merchantAccount'] = get_adyen_merchant_account()

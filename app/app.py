@@ -17,7 +17,7 @@ from main.errors import handle_adyen_error
 from main.config import *
 
 
-WEB_VERSION = "6.41.0"
+WEB_VERSION = "6.44.0"
 
 
 def create_app():
