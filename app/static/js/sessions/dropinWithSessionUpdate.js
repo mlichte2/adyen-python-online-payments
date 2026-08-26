@@ -125,7 +125,7 @@ async function startCheckout() {
         currency: "USD",
       };
       pendingAmount = amount;
-      adyenCheckout.update({ amount }, { shouldReinitializeCheckout: false });
+      adyenCheckout.update({ amount }, { shouldReinitializeCheckout: true });
     });
   } catch (error) {
     console.error(error);
