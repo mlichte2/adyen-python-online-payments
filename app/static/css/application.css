@@ -374,7 +374,9 @@ a:hover {
   margin-bottom: 20px;
 }
 
-.review-page {
+/* :not(.hidden) so this doesn't fight .hidden's display: none for specificity
+   (both are single-class selectors, and this one is declared later). */
+.review-page:not(.hidden) {
   display: flex;
   flex-direction: column;
   gap: 16px;
