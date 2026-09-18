@@ -13,6 +13,7 @@ from main.sessions import adyen_sessions, adyen_get_session_result
 from main.payment_methods import adyen_payment_methods
 from main.payments import adyen_payments
 from main.payments_details import adyen_payments_details
+from main.paypal import adyen_update_order_for_paypal_express_checkout
 from main.errors import handle_adyen_error
 from main.config import *
 
@@ -222,11 +223,7 @@ def create_app():
             }
 
 
-        apiKey = get_adyen_api_key()
-        result = requests.post(url='https://checkout-test.adyen.com/v71/paypal/updateOrder',json=update_request, headers={'X-API-KEY': apiKey})
-
-        formatted_response = result.json()
-        return formatted_response
+        return adyen_update_order_for_paypal_express_checkout(update_request)
 
     @app.route('/api/removePaymentMethod', methods=['POST'])
     def remove_payment_method():
