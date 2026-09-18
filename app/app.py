@@ -469,28 +469,25 @@ def _flatten_session_result(session):
 
 
 def _handle_session_redirect(redirect_data):
-    """Sessions flow return handler: look up the payment outcome via
-    GET /sessions/{sessionId} and render the matching result page."""
-    session_id = redirect_data['sessionId']
-    session_result = redirect_data.get('sessionResult')
+    """Sessions flow return handler.
 
-    http_response = adyen_get_session_result(session_id, session_result)
-
-    # adyen_get_session_result returns a (body, status_code) tuple on an Adyen API error
-    if isinstance(http_response, tuple):
-        logging.error(f"GET /sessions/{session_id} redirect failed: {http_response[0]}")
-        return render_template('checkout-failed.html')
-
-    response = _flatten_session_result(json.loads(http_response))
-
-    if response['resultCode'] == "Authorised":
-        return render_template('checkout-success.html', response=response)
-    elif response['resultCode'] in ["Pending", "Received"]:
-        return render_template('checkout-success.html', response=response)
-    elif response['resultCode'] == "Refused":
-        return render_template('checkout-failed.html', response=response)
-    else:
-        return render_template('checkout-failed.html', response=response)
+    The returnUrl only ever carries sessionId + redirectResult, never
+    sessionResult (see
+    https://docs.adyen.com/online-payments/build-your-integration/sessions-flow/#handle-the-redirect).
+    Submitting redirectResult is a client-side-only SDK call
+    (checkout.submitDetails), so render a page that re-initializes
+    AdyenCheckout with the existing session and finishes the redirect there.
+    That page's onPaymentCompleted/onPaymentFailed carries result.sessionResult,
+    which /result/* then uses to verify the outcome server-side via
+    GET /sessions/{sessionId}.
+    """
+    return render_template(
+        'session-redirect.html',
+        client_key=get_adyen_client_key(),
+        web_version=WEB_VERSION,
+        session_id=redirect_data['sessionId'],
+        redirect_result=redirect_data.get('redirectResult', ''),
+    )
 
 
 #  process payload asynchronously

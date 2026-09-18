@@ -1,0 +1,36 @@
+{% extends "layout.html" %} {% block content %}
+
+<meta charset="UTF-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+<link
+  rel="stylesheet"
+  href="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.css"
+  crossorigin="anonymous"
+/>
+
+<script
+  src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.js"
+  crossorigin="anonymous"
+></script>
+
+<div id="clientKey" class="hidden">{{ client_key }}</div>
+<div id="sessionId" class="hidden">{{ session_id }}</div>
+<div id="redirectResult" class="hidden">{{ redirect_result }}</div>
+
+<!-- The Sessions flow returnUrl only ever carries sessionId + redirectResult.
+     Submitting redirectResult requires the Adyen Web SDK client-side, so this
+     page re-initializes AdyenCheckout with the existing session and completes
+     the redirect here before continuing on to /result/*. -->
+<div class="status-container">
+  <div class="status">
+    <p class="status-message">Completing your payment...</p>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/sessions/handleShopperRedirect.js') }}"></script>
+{% endblock %}
