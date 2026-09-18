@@ -1,0 +1,71 @@
+{% extends "layout.html" %} {% block content %}
+
+<meta charset="UTF-8" />
+<meta
+  name="viewport"
+  content="width=device-width, initial-scale=1, shrink-to-fit=no"
+/>
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+<!-- Web Version can be changed in app/app.py variable WEB_VERSION = "x.x.x"-->
+
+<link
+  rel="stylesheet"
+  href="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.css"
+  crossorigin="anonymous"
+/>
+
+<script
+  src="https://checkoutshopper-test.cdn.adyen.com/checkoutshopper/sdk/{{ web_version }}/adyen.js"
+  crossorigin="anonymous"
+></script>
+
+<div id="clientKey" class="hidden">{{ client_key }}</div>
+
+<div id="payment-page">
+  <div class="container">
+    <div class="payment-container">
+      <div id="dropin-container" class="payment">
+        <!-- Dropin will be rendered here -->
+      </div>
+
+      <!-- Shown instead of the Drop-in once the shopper clicks "Continue".
+           Populated from the PaymentData the SDK hands us in onReview. -->
+      <div id="review-page-container" class="review-page payment hidden" data-testid="review-page">
+        <div class="review-page-header">
+          <h2>Review your order</h2>
+          <p>Confirm the details below before completing your payment.</p>
+        </div>
+
+        <div id="review-summary" class="review-summary">
+          <!-- Filled in by dropinWithReviewPage.js -->
+        </div>
+
+        <!-- Mount point for the UIElement handed to onAction (3DS2 challenge,
+             redirect, QR code, etc.) while the shopper is on the review page. -->
+        <div id="action-container" class="action-container hidden"></div>
+
+        <div class="review-actions">
+          <button
+            id="review-back-button"
+            type="button"
+            class="button review-back-button"
+          >
+            Back
+          </button>
+          <button
+            id="review-confirm-button"
+            type="button"
+            class="button review-confirm-button"
+            data-testid="review-confirm"
+          >
+            Confirm and pay
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/sessions/dropinWithReviewPage.js') }}"></script>
+{% endblock %}

@@ -374,6 +374,68 @@ a:hover {
   margin-bottom: 20px;
 }
 
+.review-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.review-page-header h2 {
+  margin: 0 0 4px;
+  color: #00112c;
+}
+
+.review-page-header p {
+  margin: 0;
+  font-size: 0.85em;
+  color: #687282;
+}
+
+.review-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background: #fff;
+  border: 1px solid #e6e9eb;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.review-summary-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  font-size: 0.95em;
+  color: #00112c;
+}
+
+.review-summary-row span:first-child {
+  color: #687282;
+}
+
+.action-container:not(.hidden) {
+  background: #fff;
+  border: 1px solid #e6e9eb;
+  border-radius: 8px;
+  padding: 16px;
+}
+
+.review-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.review-back-button {
+  background: #fff;
+  color: #00112c;
+  border: 1px solid #e6e9eb;
+}
+
+.review-back-button:hover {
+  background: #f7f8f9;
+  box-shadow: none;
+}
+
 /* end Payments page */
 
 /* Status page */
